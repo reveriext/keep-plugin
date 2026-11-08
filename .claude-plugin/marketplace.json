@@ -1,0 +1,12 @@
+{
+  "name": "keep-plugin",
+  "owner": { "name": "Reveriext" },
+  "description": "Keep, the project record, for Claude: the connector and the Keep skill in one plugin.",
+  "plugins": [
+    {
+      "name": "keep",
+      "source": "./",
+      "description": "Keep, your project record, in your assistant: the connection, and how to work in it."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "keep",
+  "version": "1.5.0",
+  "description": "Keep, your project record, in your assistant: the connection, and how to work in it.",
+  "author": { "name": "Reveriext", "url": "https://hykeep.app" },
+  "homepage": "https://hykeep.app/connect",
+  "repository": "https://github.com/reveriext/keep-plugin",
+  "license": "LicenseRef-Proprietary",
+  "privacyPolicyUrl": "https://hykeep.app/privacy",
+  "keywords": ["project management", "requirements", "tasks", "time tracking"],
+  "mcpServers": {
+    "keep": { "type": "http", "url": "https://mcp.hykeep.app/mcp" }
+  }
+}

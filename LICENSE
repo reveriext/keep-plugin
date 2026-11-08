@@ -1,0 +1,22 @@
+Copyright (c) 2026 Reveriext Solutions LLP. All rights reserved.
+
+This package (the Keep plugin, its manifests, the Keep skill and its reference
+files) is proprietary and is made available only so that it can be installed in
+an AI assistant to connect to the Keep service at https://hykeep.app.
+
+You may install and use this package, unmodified, with an AI assistant for the
+purpose of accessing the Keep service under an active Keep account. Use of the
+Keep service itself is governed by the Keep Terms of Service at
+https://hykeep.app/terms.
+
+No other right or licence is granted. You may not copy, modify, adapt,
+translate, distribute, sublicense, sell, or create derivative works of this
+package, in whole or in part, except as needed to install it as described
+above, without the prior written permission of Reveriext Solutions LLP.
+
+THIS PACKAGE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL REVERIEXT
+SOLUTIONS LLP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THIS PACKAGE OR THE USE OF IT.

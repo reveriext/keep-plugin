@@ -1,11 +1,30 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "keep",
-  "version": "1.8.0",
-  "description": "Keep, your project record, in your assistant: the connection, and how to work in it.",
-  "author": { "name": "Reveriext", "url": "https://hykeep.app" },
+  "version": "1.8.1",
+  "description": "Keep, your project record, in your AI assistant: the connection, and how to work in it.",
+  "author": {
+    "name": "Reveriext",
+    "url": "https://hykeep.app"
+  },
   "homepage": "https://hykeep.app/connect",
   "repository": "https://github.com/reveriext/keep-plugin",
   "license": "LicenseRef-Proprietary",
-  "keywords": ["project management", "requirements", "tasks", "time tracking"]
+  "keywords": ["project management", "requirements", "tasks", "time tracking"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Keep",
+        "shortDescription": "Your project record: requirements, tasks, decisions and time.",
+        "developerName": "Reveriext",
+        "category": "Productivity",
+        "websiteURL": "https://hykeep.app",
+        "privacyPolicyURL": "https://hykeep.app/privacy",
+        "termsOfServiceURL": "https://hykeep.app/terms",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png",
+        "brandColor": "#E8A33D"
+      }
+    }
+  }
 }

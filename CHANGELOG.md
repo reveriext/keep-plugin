@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.1
+
+- Codex shows Keep's name, description and logo: the manifest carries the `com.openai`
+  interface block, with the logo and icon in `assets/`.
+
 ## 1.8.0
 
 - Codex: the connector signs in by dynamic client registration, as `codex mcp add` does.

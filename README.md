@@ -1,45 +1,48 @@
-# Keep for your assistant
+# Keep for your AI assistant
 
 Keep is a project record: requirements, tasks, decisions, and the time spent on them. This
-package lets an AI assistant work in it. There are three ways in, and they give the assistant
-the same thing.
+package lets an AI assistant work in it: the Keep connector, and the Keep skill that tells the
+assistant how to work in Keep. It works with any AI assistant that connects to remote MCP
+servers. The exact steps for each assistant, as they appear on its screens, are on
+My profile › Connections in Keep and at https://hykeep.app/connect.
 
-## 1. The connector, then the skill
+## 1. Install the Keep plugin (preferred)
 
-1. **Connect Keep.** Add a remote MCP server in your assistant with this address:
+Where your AI assistant installs plugins, add this repository as a plugin marketplace and
+install Keep from it. The connector and the skill arrive together.
+
+```
+reveriext/keep-plugin
+```
+
+Then sign in with your Keep account when the connector asks. Examples of the same step from a
+terminal:
+
+```
+claude plugin marketplace add reveriext/keep-plugin && claude plugin install keep@keep-plugin
+codex plugin marketplace add reveriext/keep-plugin && codex plugin add keep@keep-plugin
+copilot plugin marketplace add reveriext/keep-plugin && copilot plugin install keep@keep-plugin
+```
+
+## 2. Or connect Keep and add the skill
+
+1. **Connect Keep.** Add a remote MCP server with this address. It is a Streamable HTTP
+   server; a browser tab opens, and you sign in with your Keep account. No key is needed.
 
    ```
    https://mcp.hykeep.app/mcp
    ```
 
-   It is a Streamable HTTP server. A browser tab opens: sign in with your Keep account.
 2. **Add the Keep skill.** The skill is the folder `skills/keep/` in this package (a
    `SKILL.md` and its `references/`), in the Agent Skills format. Add it wherever your
    assistant keeps skills, as the folder or as a ZIP of it.
 
-## 2. The agent plugin
+## The formats in this package
 
-This folder is an agent plugin in the open Agent Plugins 1.0.0 format: `plugin.json`,
-`mcp.json` (the connector above) and `skills/` (the skill above). An assistant that loads
-agent plugins gets both in one install, then asks you to sign in.
-
-## 3. The Claude plugin
-
-For Claude Code, the same connector and skill come as a Claude plugin. This folder
-is also a plugin marketplace of one plugin, in `.claude-plugin/`. In Claude Code:
-
-```
-/plugin install keep --marketplace reveriext/keep-plugin
-```
-
-or, from a terminal:
-
-```
-claude plugin marketplace add reveriext/keep-plugin
-claude plugin install keep@keep-plugin
-```
-
-Then sign in with your Keep account when the connector asks.
+The Keep plugin follows the open Agent Plugins 1.0.0 format (`plugin.json`,
+`mcp.json` and `skills/`), with the manifest fields some assistants read in addition: the
+`com.openai` interface block (name, description and logo) and `.claude-plugin/` (a plugin
+marketplace of one plugin).
 
 ## What the skill tells the assistant
 

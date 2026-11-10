@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.3
+
+- Codex: the plugin is also packaged in Codex's own format (`.codex-plugin/plugin.json`, which names
+  the skills and the connector in `.mcp.json`), so Codex associates the Keep connector with the plugin
+  and gives its tools to the chat. Claude reads the connector from `.mcp.json` as well.
+
 ## 1.8.2
 
 - Codex loads the Keep connector again. The `com.openai` sign-in block added to `mcp.json` in 1.8.0

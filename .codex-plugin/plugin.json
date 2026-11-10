@@ -1,0 +1,25 @@
+{
+  "name": "keep",
+  "version": "1.8.3",
+  "description": "Keep, your project record, in your AI assistant: the connection, and how to work in it.",
+  "author": {
+    "name": "Reveriext",
+    "url": "https://hykeep.app"
+  },
+  "homepage": "https://hykeep.app/connect",
+  "repository": "https://github.com/reveriext/keep-plugin",
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Keep",
+    "shortDescription": "Your project record: requirements, tasks, decisions and time.",
+    "developerName": "Reveriext",
+    "category": "Productivity",
+    "websiteURL": "https://hykeep.app",
+    "privacyPolicyURL": "https://hykeep.app/privacy",
+    "termsOfServiceURL": "https://hykeep.app/terms",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "brandColor": "#E8A33D"
+  }
+}

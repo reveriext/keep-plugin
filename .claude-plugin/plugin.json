@@ -1,7 +1,7 @@
 {
   "name": "keep",
   "displayName": "Keep",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Keep, your project record, in your AI assistant: the connection, and how to work in it.",
   "author": {
     "name": "Reveriext",
@@ -11,11 +11,5 @@
   "repository": "https://github.com/reveriext/keep-plugin",
   "license": "LicenseRef-Proprietary",
   "privacyPolicyUrl": "https://hykeep.app/privacy",
-  "keywords": ["project management", "requirements", "tasks", "time tracking"],
-  "mcpServers": {
-    "keep": {
-      "type": "http",
-      "url": "https://mcp.hykeep.app/mcp"
-    }
-  }
+  "keywords": ["project management", "requirements", "tasks", "time tracking"]
 }

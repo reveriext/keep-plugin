@@ -3,17 +3,7 @@
   "mcpServers": {
     "keep": {
       "type": "streamable-http",
-      "url": "https://mcp.hykeep.app/mcp",
-      "extensions": {
-        "com.openai": {
-          "auth": {
-            "type": "oauth",
-            "client": {
-              "mode": "dcr"
-            }
-          }
-        }
-      }
+      "url": "https://mcp.hykeep.app/mcp"
     }
   }
 }

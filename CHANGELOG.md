@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.2
+
+- Codex loads the Keep connector again. The `com.openai` sign-in block added to `mcp.json` in 1.8.0
+  is not accepted by Codex's plugin loader, which dropped the server; it is removed, and Codex selects
+  its sign-in method itself.
+
 ## 1.8.1
 
 - Codex shows Keep's name, description and logo: the manifest carries the `com.openai`
@@ -7,9 +13,8 @@
 
 ## 1.8.0
 
-- Codex: the connector signs in by dynamic client registration, as `codex mcp add` does.
-  Before, Codex signed in as ChatGPT's own client, whose connector rules can leave only Keep's
-  read tools. After updating, sign in to Keep again in Codex and start a new session.
+- Codex: the connector requests dynamic client registration. (Removed in 1.8.2: Codex does not
+  accept this field and dropped the connector.)
 - Approval by role: `record_decision`, `publish_update` and `share_artifact` take effect
   immediately for a project manager, the project owner or a workspace administrator, and are staged in the
   Queue for a member. A project manager may ask for a draft: `record_decision` with

@@ -105,7 +105,8 @@ Show the summary at a stopping point: the work on the record is finished, or you
 parking it.
 
 1. `stop_work { session_id, preview: true, summary, next? }` (or `pause_work`). It writes
-   nothing. It answers `proposal` and `confirm`.
+   nothing. It answers `proposal`, `confirm` and `preview_as_of`, the instant it was
+   computed at.
 2. Show the person `proposal.text` as it is. It reads like this, and ends with the question:
 
    ```
@@ -140,8 +141,10 @@ parking it.
    - **a figure** ("50 minutes") → `stop_work { session_id, summary, confirmed: true,
      minutes: 50 }`. Any figure up to the time since pick-up is theirs to give. More than
      that is refused (`confirmed_over_elapsed`): other work goes to `log_time`.
-   - **no answer, or nobody there** → `stop_work { session_id, summary }` with neither.
-     The time Keep counted is saved awaiting confirmation and waits for them in Keep, under Time.
+   - **no answer, or nobody there** → `stop_work { session_id, summary, as_of }` with
+     neither, `as_of` being the preview's `preview_as_of`. The figure the preview stated
+     after "If no response is received" is saved awaiting confirmation; the wait for an
+     answer is not counted. It waits for them in Keep, under Time.
    - **they do not want it logged** → do not send `confirmed`. Tell them that what was
      already saved is on the record, awaiting confirmation, and that they can change or delete it in
      Keep. No tool deletes a time entry.
@@ -270,7 +273,7 @@ is not part of Keep.
 - Do not log one entry per tool call, and do not post more than one summary per session.
 - Do not send `usage` figures your client did not give you.
 - Do not move a task to `done` without a time entry on it.
-- Do not ignore a `time_ask` or an `ask` Keep hands you. It is the question, already
+- Do not ignore a `time_ask` or a confirmation request (field `ask`) that Keep hands you. It is the question, already
   written.
 - Do not guess today's date. Read `calendar.today`, and send dates as `YYYY-MM-DD`.
 - Do not price anything.

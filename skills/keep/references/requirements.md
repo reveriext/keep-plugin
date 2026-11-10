@@ -56,8 +56,13 @@ instruction to put them to the person and call again. A refusal like that wrote 
 
 - `body` is the **statement**: what must be true, and why.
 - `acceptance_md` is the **acceptance criteria**: how anyone will know the requirement is
-  met. Write it as **markdown prose, not a checklist**, and keep it beside the statement:
-  never inside it.
+  met. Write it as a **top-level list, one checkable criterion per item**, and keep it
+  beside the statement: never inside it. Each top-level item is one criterion; text that is
+  not a list is a single criterion. Editing keeps the state of criteria whose text is
+  unchanged and resets the rest.
+- Whoever verifies the requirement marks each criterion met or not met with
+  `update_requirement` and its `acceptance_state`, by each criterion's `key`. Mark a
+  criterion only on evidence, never on your own judgement alone.
 
 Both are snapshotted at every version, so any two versions can be compared later.
 
@@ -138,7 +143,8 @@ open_task { task_type: "bug", requirement_id: <a requirement in review or done>,
 
 - Do not overwrite a requirement's text to reflect a new agreement: amend it, or file a CR.
 - Do not pick a type and then look for a relationship to justify it: the relationship decides.
-- Do not put acceptance criteria inside the statement, and do not write them as a checklist.
+- Do not put acceptance criteria inside the statement, and do not write several criteria as
+  one paragraph.
 - Do not amend for a typo, and do not `update_requirement` for a real change of meaning.
 - Do not flip `customer_visible` casually: changing exposure needs the project-manager
   capability, and the refusal says so. A new requirement's exposure is seeded from the

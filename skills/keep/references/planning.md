@@ -67,7 +67,8 @@ The document is the narrative; the records are what the team tracks against.
 3. `open_cycle` when the work is timeboxed, and place the tasks with `manage_cycle_tasks`.
    A task sits in at most one cycle.
 4. `record_decision` for every ruling the plan settles: the choice plus the rationale plus
-   the options weighed. It is approval-gated; a human confirms before it lands.
+   the options weighed. A project manager's decision is recorded immediately; a member's waits
+   for a project manager's approval. A proposal (`status: "proposed"`) is recorded immediately.
 5. `open_question` for anything the plan could not settle, so it is visible rather than
    forgotten in a paragraph.
 6. `record_meeting` for a kickoff, a review or a call the plan was shaped by: and whatever

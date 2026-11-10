@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "keep",
-  "version": "1.5.0",
+  "version": "1.8.0",
   "description": "Keep, your project record, in your assistant: the connection, and how to work in it.",
   "author": { "name": "Reveriext", "url": "https://hykeep.app" },
   "homepage": "https://hykeep.app/connect",

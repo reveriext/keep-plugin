@@ -51,6 +51,12 @@ Then sign in with your Keep account when the connector asks.
   marked awaiting confirmation until you confirm it in Keep.
 - To name the record in every commit message.
 - To keep each record's status true, and to ask before anything that cannot be taken back.
+- To follow the project's controls: it states the project's rules when work starts, records
+  each task's deliverable, writes acceptance criteria as a list, and presents every
+  confirmation request that Keep returns to the person and never answers it itself.
+- A method for each activity, from submitting a request to communicating outcomes.
+- When the connection is in Code Mode: to write a script for several calls, and to make every
+  step that needs the person's agreement its own `use_tool` call.
 
 ## What it does not do
 
@@ -80,7 +86,9 @@ skills/
       cycles-and-releases.md
       ways-of-working.md
       time.md
+      code-mode.md
       planning.md
+      activities.md
 README.md
 CHANGELOG.md
 LICENSE

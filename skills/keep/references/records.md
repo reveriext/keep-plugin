@@ -59,8 +59,14 @@ Pick it deliberately.
 
 - **decision**: `record_decision`. A deliberate choice plus the rationale, the alternatives,
   and the prior decision it supersedes. Use it for architecture, scope, tooling, process.
-  It is **approval-gated**: the call stages the decision and a human approves before it
-  becomes part of the record.
+  It is **approval-gated by role**: for a project manager, the project owner or a workspace
+  administrator it is recorded immediately (`status: "recorded"`); for a member it is staged
+  (`status: "awaiting_approval"`) until a project manager approves it. When the person asks
+  for a draft, send `status: "proposed"`: the decision is recorded as a proposal, for any
+  person who may write to the project, and waits in the Queue for a project manager to
+  decide it. Only a project manager, the project owner or a workspace administrator moves a
+  decision to `decided`, `revisited` or `superseded`, or modifies one once it is decided; a
+  member is refused with `manager_required`. Say so; do not retry.
 - **note**: `record_note`. A date-anchored moment with **nobody in it**: a journal entry, an
   email log, a captured Slack thread, an observation. Notes are **immutable** once recorded.
   `record_note` no longer accepts `note_kind: "standup"` or `"meeting"` for a **new** note:
@@ -83,7 +89,10 @@ Pick it deliberately.
 - **risk**: `record_risk`. Something that could cause harm if unaddressed, with severity,
   likelihood and a mitigation.
 - **question**: `open_question`. Something that needs an answer before work proceeds.
-- **update**: `publish_update`. A status report for stakeholders. Also approval-gated.
+- **update**: `publish_update`. A status report for stakeholders. Approval-gated by role in
+  the same way: published immediately for a manager, staged for a member. `stage: true` places a
+  manager's update in the Queue instead. `share_artifact` takes the same `stage`. Moving a
+  draft update to `published` is a project manager's too.
 
 **Decision or note?** If a choice was made and the team will need to know why later, it is a
 decision. If it is a record of what happened at a moment in time, it is a note. Do not

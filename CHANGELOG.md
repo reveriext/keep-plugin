@@ -1,5 +1,70 @@
 # Changelog
 
+## 1.8.0
+
+- Codex: the connector signs in by dynamic client registration, as `codex mcp add` does.
+  Before, Codex signed in as ChatGPT's own client, whose connector rules can leave only Keep's
+  read tools. After updating, sign in to Keep again in Codex and start a new session.
+- Approval by role: `record_decision`, `publish_update` and `share_artifact` take effect
+  immediately for a project manager, the project owner or a workspace administrator, and are staged in the
+  Queue for a member. A project manager may ask for a draft: `record_decision` with
+  `status: "proposed"` records a proposal (for anyone, as a proposal waits in the Queue to be
+  decided), and `stage: true` places an update or a share link in the Queue.
+- The same rule holds in the Keep application: a member's decision and share link are
+  submitted for a project manager's approval. In Keep's own chat, a project manager's
+  decision is recorded immediately, while updates and share links are always placed in the
+  Queue, and the chat cannot approve or reject.
+- `approve_run` and `reject_run` are decided by role, through any connected assistant or the
+  Queue: a project manager approves a run an assistant staged, including one staged for
+  them; a member is refused.
+  `list_pending_approvals` reports `can_decide` for each run. This replaces the rule of
+  1.6.0 that the person approves in the Queue.
+- Deciding is a project manager's through every door: moving a decision to decided,
+  revisited or superseded, modifying a decided decision, and publishing a draft update are
+  refused for a member with `manager_required`.
+- Review ownership: where no other member could review, the assistant presents the
+  assignee's confirmation request and sends `review_ownership: true` with their answer.
+
+## 1.7.0
+
+- Project controls: every project has a level (Relaxed, Standard or Strict) that gives each
+  control one value: Off, Ask or Required. Off is never mentioned, Ask is requested once, and a
+  Required control refuses the move until it is satisfied. At Relaxed, every control is Off
+  or Ask. `references/ways-of-working.md` describes the levels, the controls and the
+  refusal.
+- `start_work` returns a `protocol` block: the project's level, its Required and Ask
+  controls with their meanings, the Definition of Done, and the record's requirement (with
+  its acceptance criteria), module, cycle, linked artifacts and open questions. The skill
+  says to state the rules in one line and to read the linked artifacts.
+- The deliverable: what a task's work produced, as code, an artifact, a link or a written
+  outcome. While a task has none, the first `checkpoint_work` of a work session and the
+  preview of `pause_work` or `stop_work` carry a `reminder` that requests one, as the
+  project's controls specify.
+- Acceptance criteria are written as a top-level list, one criterion per item. Whoever
+  verifies the requirement marks each one met or not met, by its key, and only on evidence.
+- A refusal that carries a confirmation request is presented to the person, and the
+  assistant never answers it itself.
+- The skill's new reference file, `activities.md`, gives the method for each activity, from
+  submitting a request to communicating outcomes.
+
+## 1.6.0
+
+- Code Mode: a connection in Code Mode lists `get_skill`, `code`, `use_tool` and
+  `request_form`. `code` runs one script that calls Keep's tools as `keep.<tool>(args)`, up
+  to 40 calls and 30 seconds, with no network; `use_tool` calls one tool directly. Every
+  call inside a script is an ordinary Keep call, with the same access, audit and time
+  tracking. Approvals, deletions and restores, archiving and converting artifacts,
+  decisions, publishing, sharing, change requests, member removals and role changes, and
+  forms are never in a script: each is its own `use_tool` call, after the person agrees.
+  The skill's new reference file, `code-mode.md`, says how to work.
+- `get_skill`: the connector returns this skill and its reference files, in every mode.
+- The Tools setting: the person chooses for each connection, on My profile › Connections,
+  between Automatic (chat assistants get Code Mode, coding agents every tool), Code Mode
+  and All tools. A change applies from the assistant's next request.
+- Approvals are the person's: Keep refuses `approve_run` on what an assistant staged, so an
+  assistant cannot approve what it put in the Queue. The skill says to tell the person it
+  waits there.
+
 ## 1.5.0
 
 - Time: `checkpoint_work`, `pause_work` and `stop_work` take an optional `usage` (the model,

@@ -108,7 +108,12 @@ Definition of Done with Keep's marks as they would be written, the deliverable, 
 (agent time, provisional, per run; the person's user time, confirmed or suggested with its
 basis; the user time on the task) and the suggested reviewer, with `snapshot.text` and one
 `ask`. Present the `ask` to the person once, with `request_form` or your client's own question
-widget, or show `snapshot.text` and request confirmation once. Follow its `next`.
+widget, or show `snapshot.text` and request confirmation once. Follow its `next`. Send the
+same `client_session` on the close itself.
+
+An answer to a preview always carries `snapshot`. If it does not, the task moved: state that
+to the person and move it back with `transition_thread`. An answer that carries `moved: true`
+is a move that was applied, never a preview.
 
 **Session authorization.** When the person chooses "Close this task and the remaining
 tasks of this session without further confirmation", or says so in words, send `authorize_session_closure:

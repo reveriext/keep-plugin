@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.2
+
+- Closing a task: an answer to a preview always carries `snapshot`. When it does not, the
+  task moved: the assistant states that to the person and moves the task back with
+  `transition_thread`. A move to Review or Done over the connector answers `moved: true`,
+  and, when the call carries no `client_session`, a note that the move was applied. The
+  assistant sends the preview's `client_session` on the close as well.
+
 ## 1.9.1
 
 - The Definition of Done: Keep marks the items it can establish from the record (the

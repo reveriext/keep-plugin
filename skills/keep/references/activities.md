@@ -67,7 +67,8 @@ The person, or the assistant on their behalf, does the work of a task.
 3. Record the deliverable (see [ways-of-working.md](ways-of-working.md)): the commits when
    the work changed code; otherwise offer to save the document the work produced as an
    artifact linked to the task, or record a link or a written outcome.
-4. Work through the Definition of Done and mark each item.
+4. Work through the Definition of Done: Keep marks the items it can establish; mark the
+   others on evidence, citing it in `evidence`.
 5. Before stopping, call `stop_work` with `preview: true` and show the person the summary.
    The person chooses the time.
 6. Move the task to Review with `transition_thread` when the work is ready to be checked.
@@ -76,10 +77,14 @@ The person, or the assistant on their behalf, does the work of a task.
 
 The person checks completed work and accepts it or returns it.
 
-1. Show the deliverable, the Definition of Done and the time recorded on the task.
-2. Accept it with `transition_thread` to `done`, or return it to `in_progress` with a
-   `reason` that states what is missing.
-3. Where the project requires it, the reviewer is someone other than the assignee.
+1. Call `transition_thread` with `new_status: "done"` and `preview: true`, and show the
+   person the snapshot once: the deliverable, the Definition of Done, the time and the
+   suggested reviewer.
+2. On their answer, accept it with `transition_thread` to `done`, or return it to
+   `in_progress` with a `reason` that states what is missing.
+3. Keep suggests a reviewer: the owner of the task's requirement, or else the task's
+   creator. The suggestion never stops a move; with none, the assignee or the assistant
+   reviews.
 
 ## 7. Verifying
 

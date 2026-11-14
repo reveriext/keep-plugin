@@ -89,26 +89,50 @@ does not satisfy a request for the commits of work that changed code.
 
 ## Checklist: Definition of Done
 
-The project's `definition_of_done` lists what each task must satisfy before Review. Mark
-each item with `update_thread_detail` with `patch.definition_of_done`: complete, or not
-applicable with a reason. Mark an item only on evidence, never on your own judgement
-alone. At `required`, Review is refused until every item is marked; at `ask`, list what is
-missing and the move proceeds.
+The project's `definition_of_done` lists what each task must satisfy before Review. Keep
+marks four items itself when the task moves to Review or Done, from the record: the
+requirement (`dod_requirement`), the deliverable (`dod_deliverable`), the time
+(`dod_time`: agent time, or confirmed user time) and the summary (`dod_summary`). Each
+carries `by: "keep"` and its `evidence`. Mark the other items yourself with
+`update_thread_detail` and `patch.definition_of_done`: complete, or not applicable with a
+reason, always with `evidence` (the tests run and their result, the documentation or Help
+files modified, or why the item does not apply). Ask the person only for an item you cannot
+establish. Never modify a mark a person made. At `required`, Review is refused until every
+item is marked; at `ask`, the move proceeds.
+
+## Closing a task: one snapshot, one answer
+
+Before moving a task to Done, call `transition_thread { thread_id, new_status: "done",
+preview: true, client_session }`. It moves and writes nothing, and returns `snapshot`: the
+Definition of Done with Keep's marks as they would be written, the deliverable, the time
+(agent time, provisional, per run; the person's user time, confirmed or suggested with its
+basis; the user time on the task) and the suggested reviewer, with `snapshot.text` and one
+`ask`. Present the `ask` to the person once, with `request_form` or your client's own question
+widget, or show `snapshot.text` and request confirmation once. Follow its `next`.
+
+**Session authorization.** When the person chooses "Close this task and the remaining
+tasks of this session without further confirmation", or says so in words, send `authorize_session_closure:
+true` and your `client_session` on that close. While it is in force (the preview's and
+`get_work_session`'s `session_authorization`), close the session's further tasks without
+the snapshot: Keep posts the snapshot as each task's closing comment, and the user time
+remains awaiting confirmation. It covers only that person and that client session, and
+ends when the session's work sessions end. Never infer it.
 
 ## Refusals that carry a confirmation request
 
 A move that a Required control blocks is refused with `control_required`, the `control` it
-concerns, and a confirmation request for the person (field `ask`), in `request_form`
-arguments. One refusal names every missing item. Present the request to the person and act
-on their answer. **Never answer a confirmation request yourself**, never invent a
-deliverable or mark an item to resolve a refusal, and do not retry the move until
-the person has answered. `done_requires_time` refuses in the same way.
+concerns, and a confirmation request (field `ask`), in `request_form` arguments. One
+refusal names every missing item. A Definition of Done item is yours to mark on evidence;
+put its form to the person only when you cannot establish it. Every other request is the
+person's: present it and act on their answer. **Never answer it yourself**, never invent a
+deliverable or mark an item without evidence to resolve a refusal, and do not retry the
+move until the item is satisfied. `done_requires_time` refuses in the same way.
 
-**Review ownership.** Where review by someone other than the assignee is Required and no
-other member could review, the refusal requests the assignee's confirmation that they take
-ownership of approving the work. When you act for the assignee, present it; if they
-confirm, repeat the move with `review_ownership: true`. The confirmation is recorded with
-the channel it came through.
+**The suggested reviewer.** Keep suggests the owner of the task's requirement when that
+person is not the assignee, else the person who created the task. It is a note on the move
+to Done (`suggested_reviewer`), never a refusal, at every level. With no suggestion, the
+assignee or the assistant reviews, and nothing is requested. `review_ownership` is accepted
+for older clients and ignored.
 
 ## The features are one-way, and that is the point
 

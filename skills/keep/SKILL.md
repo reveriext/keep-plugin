@@ -110,8 +110,8 @@ A record's status says what is true now, not what you hope.
   cycle, linked artifacts and open questions) and `readiness` where it is returned.
 - **Record the deliverable** before Review: commits when the work changed code; otherwise
   offer to save the document as a linked artifact, or record a link or a written outcome.
-- A blocked move is refused (`control_required`, `done_requires_time`) with a confirmation
-  request (field `ask`): present it to the person and never answer it yourself. See [references/ways-of-working.md](references/ways-of-working.md).
+- Mark the Definition of Done items Keep has not marked on `evidence`; before Done, show the person the `preview: true`
+  snapshot once. Present every other `ask`; never answer it ([references/ways-of-working.md](references/ways-of-working.md)).
 - When you stop, leave one line on the record saying what is left (`next` on `stop_work`).
 
 ## Dates

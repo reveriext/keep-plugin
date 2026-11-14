@@ -258,6 +258,15 @@ Outside guests carry no time.
 on it (`done_requires_time`), on a project that tracks time. Recorded agent time satisfies
 it, and so does a session's own entry, confirmed or not. `cancelled` is free. Other kinds have no such gate.
 
+**The time in the closure snapshot.** Before a task moves to Done, `transition_thread` with
+`preview: true` returns `snapshot.time`: the agent time on the task (provisional, per run
+when there are several), the person's user time (the confirmed figure, or the suggested
+figure with its basis: active, engaged and elapsed) and the user time on the task. When the
+person's time awaits confirmation, the snapshot's `ask` carries a minutes field with the
+suggested figure as its default, and its `next` says how to confirm it with
+`update_time_entry` before the close. A close under a session authorization never confirms
+time: the suggested figure stays awaiting confirmation.
+
 ## Reading time back
 
 ```

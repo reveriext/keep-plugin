@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.9.1
+
+- The Definition of Done: Keep marks the items it can establish from the record (the
+  requirement, the deliverable, the time and the work-session summary). The assistant marks
+  the other items on evidence, citing it in `evidence`, and asks the person only for an item
+  it cannot establish.
+- Closing a task: before a move to Done, the assistant calls `transition_thread` with
+  `preview: true` and shows the person one snapshot (the Definition of Done, the deliverable,
+  the time and the suggested reviewer) as a form or as its text, then closes it. The person
+  may authorize the assistant to close the rest of the session's tasks without a snapshot.
+- The reviewer is a suggestion: the owner of the task's requirement, or else its creator.
+  It never stops a move, and a single-owner project moves to Done with no review request.
+  The review ownership confirmation is removed.
+
 ## 1.9.0
 
 - Claude Code: the report code for token counts arrives once per session, not at each

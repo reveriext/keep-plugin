@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.9.0
+
+- Claude Code: the report code for token counts arrives once per session, not at each
+  prompt, and only while the project's token counts are Automatic. Without a code the
+  usage script reads none of the transcript's token counts and sends nothing. The hooks
+  wait at most 3 seconds (2 for a subagent).
+
+- Claude Code: the plugin verifies the Keep connection at the first prompt of each session, and
+  the assistant states the result once. When Keep is connected, it states the person, their
+  email address and their workspaces. When it is not, it states the one step to restore it:
+  "Run /mcp, select the Keep server and complete sign-in." This is the plugin's first hook
+  (`hooks/claude-code.json`, named by `.claude-plugin/plugin.json`): a call to Keep's
+  `connection_status` tool through the plugin's own connection, and a short shell script that
+  records each session so the result is stated once. Codex and the open format receive no
+  hooks.
+- The skill states, for each assistant, the one step that restores the connection when a Keep
+  call fails because Keep is not connected, and what to do when Claude lists Keep twice
+  (`references/connection.md`).
+- Automatic updates: Claude Code installs new versions automatically only when automatic
+  updates are enabled for the plugin's marketplace. The README and the skill give the step.
+- Claude Code: the plugin measures agent time. Hooks on each prompt, each end of a reply,
+  each subagent's start and stop, and the end of the session call Keep's
+  `record_agent_activity` tool through the plugin's own connection, with the session's
+  identifier (and the subagent's identifier and type). Keep counts each turn in full and
+  each subagent as its own run, on the record in focus. The connector sends each report to
+  the workspace in which the session started work, or to the person's only workspace;
+  otherwise it retains the reports, for up to seven days, until the session starts work, and
+  then records them there in order.
+- Claude Code: the plugin sends token counts. A script, `usage.mjs`, run in the
+  background when a reply or a subagent finishes, adds up the tokens of each model in the
+  transcript lines written since its previous run and sends the totals to Keep, authorised
+  by a report code that Keep returns once per session, valid for that session and for token
+  counts only. The assistant is told not to send usage figures itself in such a session.
+- The first prompt of each session also gives the assistant the session's identifier, which
+  it sends as `client_session` to `start_work`.
+- Time in the skill: agent time is calculated and never asked of the person; user time is
+  suggested, and the person confirms or modifies it. The assistant no longer asks the person
+  for a figure for a work session. The skill states that agent time and token counts are
+  provisional estimates, calculated from the recorded compute and the data available.
+
 ## 1.8.3
 
 - Codex: the plugin is also packaged in Codex's own format (`.codex-plugin/plugin.json`, which names

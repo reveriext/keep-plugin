@@ -6,17 +6,28 @@ everywhere a project is (`get_project`, `list_projects`, and the create response
 
 | Field | Default | What it does |
 |---|---|---|
-| `requirements_enabled` | off | Keeps first-class requirements, and modules, in this project. **One-way.** |
-| `time_tracking_enabled` | off | Records time against work in this project. **One-way.** |
-| `git_tracking_enabled` | off | Associates branches, commits and pull requests with records. GitHub only. **One-way.** |
+| `requirements_enabled` | on at creation | Keeps first-class requirements in this project. **One-way.** |
+| `time_tracking_enabled` | on at creation | Records time against work in this project. With it off, no time at all is recorded, agent time included. **One-way.** |
+| `git_tracking_enabled` | on at creation | Associates branches, commits and pull requests with records. GitHub only. **One-way.** |
+| `cycles_enabled` | on at creation | Cycles and modules (the Plan section); off, a new cycle is refused with `cycles_disabled` and a new module with `modules_disabled`. **One-way.** |
 | `default_assignee_policy` | `creator` | Who a new task falls to when nobody is named. |
 | `time_backdate_days` | `7` | How far back a time entry may be dated, 0 to 365. 0 means today only. |
 | `requirements_customer_visible_default` | off | Whether a new requirement starts visible to customer-role members. |
+| `show_dev_activity` | follows `git_tracking_enabled` at creation | Whether records display their branches, commits and pull requests. **Two-way**; hiding them keeps the links. |
 | `agent_engagement` | `ask` | "AI assistants work in Keep": `always` means an AI assistant uses Keep for this project's work without asking; `ask` means it asks the person once. **Two-way**: a preference, not a data commitment. The main skill says how an assistant reads it. At the Strict level it reads `always` unless a manager configured otherwise. |
+| `time_mode` | `auto` | "Time recording", while time tracking is on: `auto` records agent time and suggests user time for confirmation; `manual` records no agent time, and people enter their own time. **Two-way.** |
+| `token_mode` | `auto` | "Token counts": `auto` records the Keep plugin's counts and the `usage` figures you send; `manual` only the figures you send; `off` none. **Two-way.** Send `usage` only as your client shows it. |
 | `level` | `standard` | How strictly Keep holds the project to its features: `relaxed`, `standard` or `strict`. **Two-way.** |
 | `controls` | the level's | The effective value of every control: `off`, `ask` or `required`. Read-only as a whole; a manager modifies single controls. |
-| `customised` | false | True when any control differs from the level's default. |
 | `definition_of_done` | the level's | The project's checklist, `items` of `{ id, text }`. Whether it is enforced is `controls.definition_of_done`. |
+| `done_means` | the level's | What Done means for a task: `accepted`, `merged` or `released`. |
+| `idle_flag_days` | the level's | Days without activity before a task In progress is identified to its manager, 1 to 30; null: never. |
+| `unconfirmed_reminder_days` | the level's | Days before unconfirmed time is reminded, 0 to 7; null: no reminder. |
+
+Read-only beside them: `customised` (true when any control differs from the level's default),
+`checkpoint_minutes`, `time_summary_before_recording`, `replies_internal_by_default`,
+`defaults` and `agent_engagement_stored`. `get_project` also returns `recording`: the time
+and token settings in words, their cost and the provisional notice.
 
 ## Levels and controls
 
@@ -99,18 +110,19 @@ ownership of approving the work. When you act for the assignee, present it; if t
 confirm, repeat the move with `review_ownership: true`. The confirmation is recorded with
 the channel it came through.
 
-## The switches are one-way, and that is the point
+## The features are one-way, and that is the point
 
-Off to on at any time. **On to off never.** Once a project has kept requirements, tracked
+A feature may be enabled at any time. **It is never disabled.** Once a project has kept requirements, tracked
 time or associated commits, that history is not retractable, so the API refuses the reverse
 with `switch_is_one_way` and applies nothing else in the patch.
 
-Before turning one on, say out loud what it commits the project to:
+Before enabling one, state what it commits the project to:
 
 - **`requirements_enabled`**: the project will state what it is for as requirements, with a
-  revision log, versions and acceptance criteria, and work will hang off them. It also turns
-  on **modules**: they ride the same switch, and `open_module` refuses with
-  `modules_disabled` until it is on.
+  revision log, versions and acceptance criteria, and work will hang off them.
+- **`cycles_enabled`**: the project plans in releases, sprints and phases, and in
+  **modules**: they share the same feature, and `open_module` refuses with
+  `modules_disabled` until it is enabled.
 - **`time_tracking_enabled`**: effort will be logged against records, by people and
   by assistants working for them, and it becomes readable per person, per record and per
   cycle. `log_time` is refused until it is on (`time_tracking_disabled`). A work session
@@ -118,9 +130,12 @@ Before turning one on, say out loud what it commits the project to:
 - **`git_tracking_enabled`**: records and code are associated, and the project's
   Development section appears. GitHub only.
 
-So: **do not turn a switch on speculatively.** Leave them out of `create_project` unless the
-user asked for them. Every one defaults to off, and a project that did not enable a switch
-at creation can always enable it later.
+So: **do not enable a feature speculatively.** At creation every feature omitted from
+`create_project` is **enabled** (Full mode); pass `false` only where the user said so, because
+creation is the only moment a feature can be disabled. A project created with a feature
+disabled can enable it later. On an existing project, `update_project` returns a confirmation
+request (field `ask`) before it enables a feature: present it to the person, and repeat the call
+with `confirmed: true` only on their answer.
 
 ## Who may change them
 
@@ -156,10 +171,12 @@ the refusal names the setting. Out-of-range values refuse with
 
 Read the code and act on it, do not retry blindly:
 
-- `requirements_disabled` / `modules_disabled`: a project manager turns requirements on
-  under **Project configuration → Delivery standards**. Ask; do not turn it on yourself unless asked.
-- `time_tracking_disabled`: same switch story, for time.
-- `switch_is_one_way`: you tried to turn something off. It cannot be turned off.
+- `requirements_disabled`: a project manager enables requirements under **Project
+  configuration → Delivery standards**. Ask; do not enable it yourself unless asked.
+- `cycles_disabled` / `modules_disabled`: the same, for cycles and modules, which share one
+  feature.
+- `time_tracking_disabled`: the same, for time.
+- `switch_is_one_way`: you tried to disable a feature. It cannot be disabled once enabled.
 - `manager_required`: the person you act for lacks the capability. Say so; do not retry.
 - A workspace is not available on this connection: when every call takes a `workspace`, its
   description lists the person's live workspaces, checked on every call. One they join later
@@ -168,6 +185,6 @@ Read the code and act on it, do not retry blindly:
 ## Do not
 
 - Do not enable a setting or modify a control to clear an error.
-- Do not describe a switch as reversible.
+- Do not describe a feature as reversible.
 - Do not set `requirements_customer_visible_default` expecting it to change requirements
   already written: it seeds future rows only.

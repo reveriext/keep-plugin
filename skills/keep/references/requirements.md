@@ -4,9 +4,9 @@ A requirement is **what the project is for**: a capability the product must have
 request, an enhancement, or a change request against an existing requirement. The work is
 separate: tasks are opened against it.
 
-Requirements only exist in a project that has them switched on. If a call refuses with
-`requirements_disabled`, a project manager turns them on under **Project configuration → Delivery
-standards**; the switch is one-way (see `ways-of-working.md`).
+Requirements only exist in a project that has them enabled. If a call refuses with
+`requirements_disabled`, a project manager enables them under **Project configuration → Delivery
+standards**; the feature is one-way (see `ways-of-working.md`).
 
 ## 1. Requirement first
 

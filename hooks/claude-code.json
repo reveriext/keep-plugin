@@ -1,0 +1,119 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/session-check.sh"],
+            "timeout": 3
+          },
+          {
+            "type": "mcp_tool",
+            "server": "plugin:keep:keep",
+            "tool": "connection_status",
+            "input": {
+              "session_id": "${session_id}",
+              "format": "hook"
+            },
+            "timeout": 3,
+            "statusMessage": "Verifying the Keep connection"
+          },
+          {
+            "type": "mcp_tool",
+            "server": "plugin:keep:keep",
+            "tool": "record_agent_activity",
+            "input": {
+              "event": "person_prompt",
+              "session_id": "${session_id}",
+              "format": "hook"
+            },
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:keep:keep",
+            "tool": "record_agent_activity",
+            "input": {
+              "event": "turn_end",
+              "session_id": "${session_id}"
+            },
+            "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:keep:keep",
+            "tool": "record_agent_activity",
+            "input": {
+              "event": "subagent_start",
+              "session_id": "${session_id}",
+              "agent_id": "${agent_id}",
+              "agent_type": "${agent_type}"
+            },
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:keep:keep",
+            "tool": "record_agent_activity",
+            "input": {
+              "event": "subagent_end",
+              "session_id": "${session_id}",
+              "agent_id": "${agent_id}"
+            },
+            "timeout": 2
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:keep:keep",
+            "tool": "record_agent_activity",
+            "input": {
+              "event": "session_end",
+              "session_id": "${session_id}"
+            },
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

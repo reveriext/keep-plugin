@@ -1,18 +1,28 @@
 # Time: a work session while you work, or a log after the fact
 
-Time in Keep is a **log of effort**, not a clock and not an invoice. **It is a person's
-time and nobody else's.** It gets written down in two ways:
+Time in Keep is a **log of effort**, not a clock and not an invoice. Keep records two kinds
+of time, separately:
+
+- **Agent time** is the assistant's work. Keep calculates it; it is never asked of the
+  person, and nobody edits it.
+- **User time** is the person's own time, and nobody else's. Keep suggests it, and the
+  person confirms or modifies it.
+
+Agent time and token counts are provisional estimates, calculated from the recorded compute and the data available.
+
+User time is written down in two ways:
 
 1. **A work session**: `start_work` when you pick a record up, `checkpoint_work` as you go,
-   `pause_work` or `stop_work` when you leave it.
-2. **`log_time`**, for work no session covered, in minutes the person gives.
+   `pause_work` or `stop_work` when you leave it. The session's entry is the suggestion.
+2. **`log_time`**, for the person's own work that no session covered, in minutes the
+   person gives.
 
 Both write the same kind of entry: the calling person's minutes, on a record, with a note.
 
-Time needs the project's time tracking to be on (Project configuration, Delivery standards).
-If `log_time` is refused for that reason, ask. Do not turn the switch on to clear the
-error. With tracking off a work session still opens and keeps its work log, and the answer
-says no time was booked.
+Time needs the project's time tracking to be enabled (Project configuration, Delivery standards).
+If `log_time` is refused for that reason, ask. Do not enable the feature to clear the
+error. With tracking disabled a work session still opens and keeps its work log, and the answer
+states that no time was recorded.
 
 ## A work session
 
@@ -33,8 +43,10 @@ get_work_session { thread_id? }
   with `thread_id`, each checked as `thread_id` is, and share the time equally. Name them
   only when the work really serves each one; otherwise start work on one record at a time.
 - **`client_label`** is how your client is named on the record ("Cursor", "Codex"), up to
-  40 characters. Optional. `client_session` is your client's own session id: with it,
-  starting a second record closes the first.
+  40 characters. Optional. `client_session` is your client's own session identifier: with
+  it, starting a second record closes the first. When the Keep plugin gives you this
+  session's identifier, send it: the agent time the plugin measures is then recorded on
+  the record in focus.
 - **`checkpoint_work`** is quiet: it adds a line to the record's activity and grows the
   time entry, creating it on the first checkpoint.
 - **`commits`**, on `checkpoint_work`, `pause_work` and `stop_work`, is a list of
@@ -62,6 +74,8 @@ usage { model, input_tokens, output_tokens, cache_tokens, user_active_seconds }
 - Pass it **when your client exposes these figures**, for the work since your last
   report: the model, the token counts, and the seconds the person was actively engaged.
   Send only the fields you have; every field is optional.
+- **When the Keep plugin sends the token counts of your session**, you are told so at the
+  first prompt. Then do not send `usage`: the figures would be counted twice.
 - **Never invent figures.** Do not estimate tokens from the length of the conversation, and
   do not round a guess into `user_active_seconds`. A client that reports nothing is
   recorded as "Tokens not reported", which is correct.
@@ -70,24 +84,28 @@ usage { model, input_tokens, output_tokens, cache_tokens, user_active_seconds }
 
 ### Agent time and user time
 
-Keep records two things separately. **Agent time** is the time your session spent working
-in Keep, measured from your calls, whether or not a work session is open; it is recorded
-against the record you are working on, and nobody edits it. **User time** is the person's
-own time: Keep suggests it from the person's own activity, and the person confirms it.
+**Agent time** is the time your session spent working, recorded against the record in
+focus. Keep calculates it in one of two ways, and the record states which:
 
-### How Keep counts
+- **Measured by the Keep plugin**: in a client where the Keep plugin runs, each turn from
+  the person's prompt to the end of your reply is counted in full, up to a limit per turn,
+  and each subagent's work is counted as its own run on the same record. Work before a
+  record is in focus is attributed to the record the work then focuses on, or remains
+  unallocated.
+- **Measured from Keep's calls**: elsewhere, Keep sees only its own calls. Every call that
+  names the record counts as activity, and ten minutes of inactivity close the session. So
+  forty minutes of work between two calls is a few minutes on Keep's count: checkpoint at
+  each completed step.
 
-Keep sees only its own calls. Every Keep call that names the record counts as activity on
-its session, and **ten quiet minutes close the session**, booking up to the last call. So
-forty minutes of work between two calls is a few minutes on Keep's count. Two things
-follow:
+**User time** is suggested from the person's own acts during the session: prompts,
+approvals, answered forms, reviews and meetings. A session in which the person did not act
+suggests no user time; only the agent time is recorded.
 
-- **Checkpoint at each completed step.** It keeps the session open and the count closer.
-- **Keep's count is not the answer.** The summary shows it beside the time that passed,
-  and the person chooses the figure.
+The assistant never asks the person for either figure. The summary states both, and the
+person confirms or modifies the user time only.
 
-A checkpoint or a stop on a session that was already closed for quiet is still accepted
-and grows the same entry, so a late summary is not lost.
+A checkpoint or a stop on a session that was already closed after inactivity is still
+accepted and updates the same entry, so a late summary is not lost.
 
 ### Switching records
 
@@ -115,39 +133,41 @@ parking it.
    - Covered the empty-month case with a test
    - Commits: a41c9e2
 
-   Agent runs (measured; these cannot be edited)
+   Agent time (calculated; it cannot be edited)
      Claude Code  15:35–16:40  52m  Tokens not reported
 
    Your time, 15:35–16:40
-     active 12m · engaged 41m (suggested) · elapsed 1h 05m
+     active 12m · engaged 41m · elapsed 1h 05m
 
-   The following will be recorded (41m in total):
+   Suggested user time (41m in total):
      ABC-12  41m  15:35–16:40
 
-   Reply OK, or provide a different figure or allocation.
+   Confirm the suggestion, or state the modified figure.
    Time outside this session requires a separate entry.
    If no response is received, 41m is recorded as suggested and marked as awaiting confirmation.
 
-   Your time for this session: 41m suggested on ABC-12, upper limit 1h 05m. OK, or a different figure?
+   Suggested user time for this session: 41m on ABC-12, at most 1h 05m. Do you confirm it, or modify it?
    ```
 
-   The agent runs are the assistant's own time, measured from its calls; they are shown, not
-   asked about. The person answers for their own time only. Where the client reported its
-   token usage, a run reads "N reported tokens (indicative)". The times are in the
-   workspace's time zone and the line names the zone. Do not rewrite them into another zone.
-   A workspace whose Keep predates this version asks the older question ("How much should I
-   log on ABC-12? Keep saw 14m; 1h 05m passed."); book the answer the same way.
-3. Book what they say:
-   - **a figure** ("50 minutes") → `stop_work { session_id, summary, confirmed: true,
-     minutes: 50 }`. Any figure up to the time since pick-up is theirs to give. More than
-     that is refused (`confirmed_over_elapsed`): other work goes to `log_time`.
-   - **no answer, or nobody there** → `stop_work { session_id, summary, as_of }` with
-     neither, `as_of` being the preview's `preview_as_of`. The figure the preview stated
-     after "If no response is received" is saved awaiting confirmation; the wait for an
-     answer is not counted. It waits for them in Keep, under Time.
-   - **they do not want it logged** → do not send `confirmed`. Tell them that what was
-     already saved is on the record, awaiting confirmation, and that they can change or delete it in
-     Keep. No tool deletes a time entry.
+   The agent time is the assistant's own, calculated by Keep; it is shown, not asked about.
+   The person answers for their own time only. Where the client reported its token usage, a
+   run reads "N reported tokens (indicative)". The times are in the workspace's time zone
+   and the line names the zone. Do not rewrite them into another zone. When the person did
+   not act during the session, the summary states that no user time is suggested and asks
+   only whether the summary is correct.
+3. Record what they say:
+   - **they confirm** → `stop_work { session_id, summary, confirmed: true }`: the
+     suggestion is recorded as confirmed.
+   - **a modified figure** ("50 minutes") → `stop_work { session_id, summary, confirmed:
+     true, minutes: 50 }`. Any figure up to the time since pick-up is theirs to give. More
+     than that is refused (`confirmed_over_elapsed`): other work goes to `log_time`.
+   - **no response received** → `stop_work { session_id, summary, as_of }`
+     with neither, `as_of` being the preview's `preview_as_of`. The figure the preview
+     stated after "If no response is received" is saved awaiting confirmation; the wait for
+     an answer is not counted. It waits for them in Keep, under Time.
+   - **they do not want it recorded** → do not send `confirmed`. Tell them that what was
+     already saved is on the record, awaiting confirmation, and that they can change or
+     delete it in Keep. No tool deletes a time entry.
 
 `minutes` without `confirmed: true` is refused. `confirm` is the same question as a ready
 `request_form` call, for a client that can draw a form.
@@ -155,7 +175,7 @@ parking it.
 ### Concurrent records are asked together
 
 When the session named several records, or another session of the person's ran at the same
-time, the summary asks for all of those records at once: it lists the agent runs, the
+time, the summary asks for all of those records at once: it lists the agent time, the
 person's active, engaged and elapsed time, and the figure suggested for each record, and
 states the limit ("ABC-16 and ABC-20 together cannot exceed 30m"). Show it as it is.
 
@@ -174,7 +194,7 @@ states the limit ("ABC-16 and ABC-20 together cannot exceed 30m"). Show it as it
 line. You supply the rest:
 
 - **`summary` and the checkpoint notes say what changed**, past tense, one line each.
-- **Commits by sha**, if any landed.
+- **Commits by sha**, if any were made.
 - **`next` only when something is left.** Do not make one up to fill the space.
 
 ## `log_time`, for work no session covered
@@ -198,12 +218,14 @@ log_time { thread_id, minutes | (started_at + ended_at), day?, note, preview?, c
 
 ### Never invent a person's time
 
-Ask them. `request_form` with one number field is the way. When Keep wants the minutes it
-hands you that form already written: `time_ask` on a task's move to `review` with nothing
-logged, and `details.ask` on the `done` refusal. Send it, then call `log_time` with the
-answer. If the person cannot say, estimate from the work you actually did and say so in the
-note ("estimated from the work done"). An estimate said out loud is honest. A round number
-nobody can account for is worse than no number.
+Agent time is never asked of the person: Keep calculates it. Ask the person only for their
+own work that no session covered, and `request_form` with one number field is the way.
+When Keep wants that figure it hands you the form already written: `time_ask` on a task's
+move to `review` with no time recorded, and `details.ask` on the `done` refusal. A task
+with recorded agent time needs neither, and nothing is asked. Send the form, then call
+`log_time` with the answer. If the person cannot say, estimate from the work you actually
+did and say so in the note ("estimated from the work done"). An estimate stated as such is
+honest. A round number nobody can account for is worse than no number.
 
 ## Dates, and whose today
 
@@ -218,23 +240,23 @@ nobody can account for is worse than no number.
   over working out the bounds.
 - When you tell the person which day you logged against, say the `day` Keep returned.
 
-## A meeting's time goes on the meeting, and everyone books their own
+## A meeting's time goes on the meeting, and everyone records their own
 
-There is no way to book a meeting's time for anyone but the caller. After you write a
-meeting up (`record_meeting`), book only the person's own time:
+There is no way to record a meeting's time for anyone but the caller. After you write a
+meeting up (`record_meeting`), record only the person's own time:
 
 - `transition_thread { thread_id, new_status: "held", duration_minutes, book_my_time: true }`
   in the call that marks it held, or
 - `log_time { thread_id: <the meeting> }` afterwards.
 
-The other attendees are not left out: each of them is offered their own booking in Keep.
+The other attendees are not left out: each of them is offered their own entry in Keep.
 Outside guests carry no time.
 
 ## The Done gate
 
-`transition_thread` to `done` is refused on a task with no time entry on it
-(`done_requires_time`), on a project that tracks time. A session's own entry satisfies it,
-confirmed or not. `cancelled` is free. Other kinds have no such gate.
+`transition_thread` to `done` is refused on a task with neither agent time nor a time entry
+on it (`done_requires_time`), on a project that tracks time. Recorded agent time satisfies
+it, and so does a session's own entry, confirmed or not. `cancelled` is free. Other kinds have no such gate.
 
 ## Reading time back
 
@@ -264,6 +286,8 @@ is not part of Keep.
 
 ## Do not
 
+- Do not ask the person for agent time, or for a figure when a work session covered the
+  work: the summary carries the suggestion.
 - Do not log time for another person.
 - Do not send `confirmed: true` or `minutes` unless the person said yes or gave that figure
   in this conversation. Silence is not a yes.
@@ -272,7 +296,7 @@ is not part of Keep.
 - Do not confirm someone's time with `update_time_entry` to clear an "Awaiting confirmation" mark.
 - Do not log one entry per tool call, and do not post more than one summary per session.
 - Do not send `usage` figures your client did not give you.
-- Do not move a task to `done` without a time entry on it.
+- Do not move a task to `done` with no time recorded on it.
 - Do not ignore a `time_ask` or a confirmation request (field `ask`) that Keep hands you. It is the question, already
   written.
 - Do not guess today's date. Read `calendar.today`, and send dates as `YYYY-MM-DD`.

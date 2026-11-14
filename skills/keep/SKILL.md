@@ -6,11 +6,12 @@ description: Work in Keep, the project record. Use when starting or finishing wo
 # Working in Keep
 
 Keep is the person's project record: requirements, tasks, decisions, and the time spent on
-them. This skill says how to work in it. It needs the Keep connector: if neither
-`start_work` nor `code` is among your tools, say that Keep is not connected and stop. Do
-not describe work as recorded when it was not. If `code` and `use_tool` are listed, the
-connection is in Code Mode: read [references/code-mode.md](references/code-mode.md), and
-make every consequential step its own `use_tool` call, never part of a script.
+them. This skill says how to work in it. It needs the Keep connector. If neither
+`start_work` nor `code` is among your tools, or a Keep call fails because Keep is not
+connected, say so, give the step in [references/connection.md](references/connection.md)
+and stop. Do not describe work as recorded when it was not. If `code` and `use_tool` are
+listed, the connection is in Code Mode: read [references/code-mode.md](references/code-mode.md),
+and make every consequential step its own `use_tool` call, never part of a script.
 
 ## When to use Keep
 
@@ -47,39 +48,39 @@ make every consequential step its own `use_tool` call, never part of a script.
 
 ## Keep track of time
 
-Nothing measures your work for you. Keep counts time only from your own calls about a
-record, so the time is right only if you tell Keep as you go.
+Keep records two kinds of time, separately. **Agent time** is your work: Keep calculates
+it, from each turn and subagent when the Keep plugin runs in your client, otherwise from
+your calls. Never ask the person for it. **User time** is the person's own time: Keep
+suggests it from their own acts, and the person confirms or modifies it.
+Agent time and token counts are provisional estimates, calculated from the recorded compute and the data available.
 
-1. **Pick up.** Call `start_work` with the record's `thread_id`. Keep its `session_id`. A
-   task moves to In progress and is assigned to the person if nobody holds it. If it
-   answers `held_by_other`, say who holds it and ask. Do not take it.
-2. **Checkpoint.** Call `checkpoint_work` with one line (`note`: what changed, past tense)
-   each time you finish a step, and pass the commits you made (`commits`: each with its
-   `sha`, `message` and `repo`, the `owner/name` of the checkout's git remote). They go on
-   the record's Development tab. Do not go a long stretch without one: ten quiet minutes
-   close the session.
-3. **Before you stop, show the person the time.** Call `stop_work` with `preview: true`
-   and a `summary`. It writes nothing. Show the person `proposal.text` exactly as returned
-   and wait. It states what Keep counted and how long has passed. The person chooses.
-4. **Book their answer.** Call `stop_work` again with `confirmed: true` and their figure in
-   `minutes`. If they do not answer, call `stop_work` with neither, and `as_of` set to the
-   preview's `preview_as_of`: the figure the preview showed is saved, marked awaiting
-   confirmation, and they can confirm it in Keep. Tell them so.
-5. **Coming back later?** Use `pause_work` in place of `stop_work`, the same way, and
-   `start_work` again when you return.
+1. **Pick up.** Call `start_work` with the record's `thread_id`, and `client_session` when
+   you have been given this session's identifier. Keep its `session_id`. A task moves to
+   In progress and is assigned to the person if nobody holds it. If it answers
+   `held_by_other`, say who holds it and ask. Do not take it.
+2. **Checkpoint.** Call `checkpoint_work` at each finished step, with one line (`note`, past
+   tense) and your commits (`commits`: `sha`, `message`, `repo` as `owner/name`).
+3. **Before you stop, show the person the summary.** Call `stop_work` with `preview: true`
+   and a `summary`. It writes nothing. Show `proposal.text` exactly as returned and wait.
+   It states the agent time as calculated and the user time as suggested. Do not ask for
+   a figure of your own.
+4. **Record their answer.** They confirm: `stop_work` with `confirmed: true`. They modify
+   it: add their figure in `minutes`, or their `allocation`. No response received:
+   `stop_work` with neither, and `as_of` set to the preview's `preview_as_of`; the
+   suggestion is recorded as awaiting confirmation, and they can confirm it in Keep.
+5. **Pause and resume.** Use `pause_work` the same way, and `start_work` on return.
 
 Rules that hold throughout:
 
 - **Never invent minutes.** `confirmed: true` and `minutes` are the person's words, never
   your judgement. Silence is not a yes.
-- **An estimate is said to be one.** For work no session covered, ask the person for the
-  figure and call `log_time` with `confirmed: true`. If they cannot say, estimate from what
-  you actually did, write "estimated" in the `note`, and leave `confirmed` out.
-- **Follow the reminder.** Other writes on a record answer with a `time` block. Its
-  `reminder` says what to do in the state you are in, and gives the `session_id` when a
-  session is open. If you have lost track, call `get_work_session`.
-- **"Show me the time"**: `stop_work` with `preview: true`, or `list_time_entries`.
-- Time is a person's time. Never log for someone else, and never price it.
+- **An estimate is said to be one.** For the person's own work that no session covered,
+  ask them for the figure and call `log_time` with `confirmed: true`. If they cannot say,
+  estimate from what you actually did, write "estimated" in the `note`, and leave
+  `confirmed` out.
+- **Follow the reminder** in the `time` block other writes return. If you have lost
+  track, call `get_work_session`.
+- User time is the person's own. Never record it for someone else, and never price time.
 
 More, including meetings and correcting an entry: [references/time.md](references/time.md).
 

@@ -61,7 +61,7 @@ Any other call that needs `acknowledge: true` is refused in a script as well. A 
 read what the step needs; the step itself is the `use_tool` call.
 
 Approvals follow the person's role in every mode: a project manager, the project owner or a
-workspace admin may `approve_run` through `use_tool`, on the person's explicit word; a
+workspace administrator may `approve_run` through `use_tool`, on the person's explicit word; a
 member is refused, and the run waits for a project manager in Keep's Queue.
 
 ## Limits
@@ -87,7 +87,7 @@ their figure (`confirmed: true` with `minutes`) is a later call, made after they
 
 The person chooses for each connection, on My profile › Connections, under Tools:
 
-- **Automatic**, the default: chat assistants get Code Mode, coding agents get every tool.
+- **Automatic**, the default: chat assistants get Code Mode, coding assistants get every tool.
 - **Code Mode**: `get_skill`, `code`, `use_tool` and `request_form`.
 - **All tools**: every tool, called one at a time. `code` and `use_tool` are not listed,
   and the assistant works as it always has.

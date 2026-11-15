@@ -175,7 +175,7 @@ parking it.
 ### Concurrent records are asked together
 
 When the session named several records, or another session of the person's ran at the same
-time, the summary asks for all of those records at once: it lists the agent time, the
+time, the summary asks for all of those records together: it lists the agent time, the
 person's active, engaged and elapsed time, and the figure suggested for each record, and
 states the limit ("ABC-16 and ABC-20 together cannot exceed 30m"). Show it as it is.
 
@@ -203,7 +203,7 @@ line. You supply the rest:
 log_time { thread_id, minutes | (started_at + ended_at), day?, note, preview?, confirmed? }
 ```
 
-- `thread_id` is the record the work was for, of **any kind**. Time is never logged on the
+- `thread_id` is the record the work was for, of **any kind**. Time is never recorded on the
   bare project: open a task if the work has none.
 - Give `minutes` (1 to 1440), or `started_at` with `ended_at`.
 - `day` is the calendar day the time is for, `YYYY-MM-DD`, in the person's own day. It
@@ -211,7 +211,7 @@ log_time { thread_id, minutes | (started_at + ended_at), day?, note, preview?, c
 - `note` says what was done.
 - `confirmed: true` when the person gave or agreed to the figure. Without it the entry is
   saved awaiting confirmation, which is right for a figure you estimated.
-- `preview: true` shows what would be logged, with the `day` it would be filed on, and
+- `preview: true` shows what would be recorded, with the `day` it would be filed on, and
   writes nothing.
 - The entry always belongs to the calling person. You cannot log time for someone else.
 - Backdating is bounded by the project's `time_backdate_days`. A day outside it is refused.
@@ -238,7 +238,7 @@ honest. A round number nobody can account for is worse than no number.
 - **"Yesterday", "last Friday":** count back from `calendar.today` and send that as `day`.
 - **"This week"** starts on `calendar.week_starts_on`. In a read, prefer the `when` preset
   over working out the bounds.
-- When you tell the person which day you logged against, say the `day` Keep returned.
+- When you tell the person the day on which the time was recorded, say the `day` Keep returned.
 
 ## A meeting's time goes on the meeting, and everyone records their own
 
@@ -273,7 +273,7 @@ time: the suggested figure stays awaiting confirmation.
 list_time_entries { project_id | thread_id, user_id?, from?, to?, when? }
 ```
 
-- Newest first, capped at 200 rows. `from` and `to` are days, matched on each entry's own
+- Most recent first, capped at 200 rows. `from` and `to` are days, matched on each entry's own
   `day`. `from` is included and `to` is not.
 - `when` is a preset counted from the person's today: `today`, `yesterday`, `week`, `7d`,
   `30d`, `month`, `all`. An explicit `from` or `to` wins.

@@ -100,7 +100,7 @@ Work each packet inside a work session on its task (`start_work`, `checkpoint_wo
 `transition_thread`. For work no session covered, book the person's time with `log_time`
 on the record: one entry per task, not per tool call. Time in Keep is a person's time.
 
-**In that order.** A task cannot reach `done` on a time-tracking project with nothing logged
+**In that order.** A task cannot reach `done` on a time-tracking project with no time recorded
 against it; the server refuses the move. That gate is task-only. Time itself goes on **any
 record**: a requirement's or a cycle's total is its own entries plus the time on the tasks
 that deliver it. See `time.md`.

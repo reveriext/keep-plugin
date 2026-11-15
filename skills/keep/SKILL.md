@@ -29,8 +29,8 @@ and make every consequential step its own `use_tool` call, never part of a scrip
 4. **No is no.** After a no, do not use Keep again in this conversation and do not ask
    again. Never ask twice, not for a second task and not when the subject changes. Keep
    does not enforce a refusal; the assistant is responsible for retaining it.
-5. **A direct request always wins, both ways.** "Log this in Keep" turns it on after a no.
-   "Don't track this" turns it off on a project set to Always.
+5. **A direct request always wins, both ways.** "Log this in Keep" enables it after a no.
+   "Don't track this" disables it on a project configured as Always.
 
 ## Record first
 
@@ -139,7 +139,7 @@ In Keep, some calls carry the same gate:
   a recycle bin for 30 days (`list_recycle_bin`, `restore_thread`). There is no tool that
   destroys a record for good. Do not look for one.
 
-If you have already done something that needed a yes, say so at once and say how to undo it.
+If you have already done something that needed a yes, say so immediately and say how to undo it.
 
 ## Reference files: read the one the work needs
 

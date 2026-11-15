@@ -9,7 +9,9 @@
 # every later prompt of the same session it prints nothing.
 #
 # The connection itself is verified by the hook beside this one, which calls the
-# Keep connector under the person's own sign-in. This script reaches no network.
+# Keep connector under the person's own sign-in and sends the plugin's version
+# with it; Keep answers whether this version is out of date. This script reaches
+# no network.
 #
 # It never stops a prompt: any problem ends the script with no output and exit 0.
 
@@ -39,7 +41,7 @@ find "$dir" -type f -mtime +14 -exec rm -f {} + 2>/dev/null
 # work session and the agent time this plugin reports share one run in Keep.
 # It holds only [A-Za-z0-9._-] (the pattern above), so it is safe inside JSON.
 printf '%s%s%s\n' \
-  '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"The Keep plugin verified the Keep connection at the first prompt of this session. If this context contains a statement that begins with \"Keep is connected as\", state that statement to the person once, in one line, at the start of your reply, and do not state it again in this session. If this context contains no such statement, state to the person once: \"Keep is not connected. Run /mcp, select the Keep server and complete sign-in.\" When you call start_work in this session, send client_session with the value \"' \
+  '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"The Keep plugin verified the Keep connection at the first prompt of this session. If this context contains a statement that begins with \"Keep is connected as\", state that statement to the person once, in one line, at the start of your reply, and do not state it again in this session. If this context contains no such statement, state to the person once: \"Keep is not connected. Run /mcp, select the Keep server and complete sign-in.\" If this context contains a statement that begins with \"The Keep plugin in this assistant is out of date\", state that statement to the person once, after the connection statement, and do not state it again in this session. When you call start_work in this session, send client_session with the value \"' \
   "$session" \
   '\", so that Keep records the agent time of this session on the record in focus. The Keep plugin sends the token counts of this session to Keep: do not send usage figures to Keep in this session. Then respond to the prompt."}}'
 exit 0

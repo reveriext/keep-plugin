@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.10.0
+
+- Claude Code: the connection check at the first prompt of a session sends the plugin's
+  version to Keep. When a newer version is published, Keep states once per session that
+  the plugin is out of date, with the update step for the assistant in use, and the
+  assistant states it to the person after the connection statement.
+
 ## 1.9.2
 
 - Closing a task: an answer to a preview always carries `snapshot`. When it does not, the

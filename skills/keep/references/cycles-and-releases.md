@@ -5,7 +5,7 @@
 - **sprint**: a one-to-two-week iteration.
 - **phase**: a stage of delivery (Discovery, Build, Launch).
 - **milestone**: a checkpoint someone is answerable for.
-- **release**: a versioned ship.
+- **release**: a versioned release.
 
 Every cycle has a `start_date`, an `end_date` and a `goal`. Statuses are `upcoming` →
 `active` → `closed`. If the thing you are describing has no dates, it is a **module**, not a
@@ -72,7 +72,7 @@ Write the notes before you close. Closing without them is a state you have to ex
 
 ## A release carries its identity
 
-On a cycle whose kind is `release`, and only there, record what shipped:
+On a cycle whose kind is `release`, and only there, record what was released:
 
 ```
 update_thread_detail {
@@ -93,7 +93,7 @@ project-manager capability. Fill them in when the release is deployed, not befor
 Shipping is a sequence, in this order:
 
 1. Publish the release notes and link them on the release cycle.
-2. Close the release cycle with the ship date and its version identity.
+2. Close the release cycle with the release date and its version identity.
 3. **Open the next release cycle** immediately, so in-flight work has somewhere to land.
 4. **Re-point the standing Maintenance phase** at the version now in production.
 
@@ -114,8 +114,8 @@ cut yet, and do not reopen a closed release to add work to it: open a task on ma
 - Do not close a release cycle with a bare status flip when notes were expected.
 - Do not put a version on a sprint.
 - Do not move a task between cycles by editing it: call `manage_cycle_tasks`.
-- Do not infer a plan's order from `updated_at`: that is the order things were last
+- Do not infer a plan's order from `updated_at`: that is the order in which records were last
   touched, which ticking a checkbox changes. The rank is the order.
 - Do not fake an order with title prefixes ("1. …", "2. …", "P1 -"). A number in a title
   is a number nothing sorts by, and it is wrong the moment anything moves.
-- Do not invent a release version. The version comes from what actually shipped.
+- Do not invent a release version. The version comes from what was actually released.

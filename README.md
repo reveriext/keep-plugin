@@ -28,7 +28,7 @@ copilot plugin marketplace add reveriext/keep-plugin && copilot plugin install k
 automatically only when automatic updates are enabled for the marketplace it came from. They
 are disabled for a marketplace you add yourself. Enable them once: run `/plugin`, open
 **Marketplaces**, select **keep-plugin** and select **Enable auto-update**. A new version
-takes effect in the next session, or after `/reload-plugins`. An organisation can enable
+takes effect in the next session, or after `/reload-plugins`. An organization can enable
 the same setting for its members with `autoUpdate: true` on the marketplace's
 `extraKnownMarketplaces` entry in a Claude Code settings file.
 
@@ -132,7 +132,7 @@ not distinguish those turns, so Keep counts them as prompts.
 Claude Code displays a notice when a plugin that contains hooks is installed. To disable
 the plugin's hooks entirely, run `/plugin`, open the installed plugins and disable the Keep
 plugin, or set `"disableAllHooks": true` in Claude Code's settings, which disables the hooks
-of every plugin. An organisation can also restrict hooks with `allowManagedHooksOnly`. The
+of every plugin. An organization can also restrict hooks with `allowManagedHooksOnly`. The
 Keep connector works without the hooks; agent time is then calculated from Keep's calls
 only. Other assistants receive no hooks from this package.
 

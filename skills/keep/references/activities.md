@@ -2,7 +2,7 @@
 
 Keep has no delivery roles. Anyone may perform any activity that their access allows: a
 developer may report a defect, and a project manager may implement a task. Access remains
-as it is (workspace owner and admins, a project's managers, a project's members). What Keep
+as it is (workspace owner and workspace administrators, a project's managers, a project's members). What Keep
 adds is a method for each activity. When the person performs one of these activities,
 follow its method, whoever they are.
 

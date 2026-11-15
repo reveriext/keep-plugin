@@ -152,7 +152,7 @@ Before enabling one, state what it commits the project to:
 - **`cycles_enabled`**: the project plans in releases, sprints and phases, and in
   **modules**: they share the same feature, and `open_module` refuses with
   `modules_disabled` until it is enabled.
-- **`time_tracking_enabled`**: effort will be logged against records, by people and
+- **`time_tracking_enabled`**: effort will be recorded against records, by people and
   by assistants working for them, and it becomes readable per person, per record and per
   cycle. `log_time` is refused until it is on (`time_tracking_disabled`). A work session
   still opens and keeps its work log, but books no time.
@@ -171,9 +171,9 @@ with `confirmed: true` only on their answer.
 - Changing **any** ways-of-working field on an existing project needs the **project-manager
   capability**; otherwise the call refuses with `manager_required`. Restating a value that
   is already set is always fine.
-- `create_project` is **workspace admins only**. If the person you are acting for is not an
-  admin, the right next move is `request_project`, which files the request for an admin to
-  answer.
+- `create_project` is **workspace administrators only**. If the person you are acting for is not a
+  workspace administrator, the right next move is `request_project`, which files the request
+  for a workspace administrator to answer.
 
 ## The default-assignee rule
 

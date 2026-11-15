@@ -28,6 +28,16 @@ In Claude Code, the Keep plugin verifies the connection at the first prompt of e
 session. When it reports "Keep is connected as" a person, state that statement to the
 person once, in one line, and do not repeat it in the same session.
 
+## When the Keep plugin is out of date
+
+In Claude Code, the Keep plugin sends its version to Keep at the first prompt of each
+session. When a newer version is published, Keep adds a statement that begins "The Keep
+plugin in this assistant is out of date", with the installed version, the current version
+and the update step for the assistant in use. State that statement to the person once,
+after the connection statement, in Keep's words, and do not repeat it in the same session.
+Do not update the plugin on the person's behalf. When Keep adds no such statement, the
+plugin is current: say nothing about its version.
+
 ## Keeping the Keep plugin up to date
 
 Claude Code installs a new version of a plugin automatically only when automatic updates

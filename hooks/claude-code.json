@@ -15,7 +15,9 @@
             "tool": "connection_status",
             "input": {
               "session_id": "${session_id}",
-              "format": "hook"
+              "format": "hook",
+              "plugin_version": "1.10.0",
+              "client": "claude-code"
             },
             "timeout": 3,
             "statusMessage": "Verifying the Keep connection"

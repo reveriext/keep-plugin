@@ -16,7 +16,7 @@
             "input": {
               "session_id": "${session_id}",
               "format": "hook",
-              "plugin_version": "1.10.0",
+              "plugin_version": "3.4.1",
               "client": "claude-code"
             },
             "timeout": 3,
@@ -45,7 +45,8 @@
             "tool": "record_agent_activity",
             "input": {
               "event": "turn_end",
-              "session_id": "${session_id}"
+              "session_id": "${session_id}",
+              "format": "hook"
             },
             "timeout": 3
           },
@@ -110,7 +111,8 @@
             "tool": "record_agent_activity",
             "input": {
               "event": "session_end",
-              "session_id": "${session_id}"
+              "session_id": "${session_id}",
+              "format": "hook"
             },
             "timeout": 5
           }

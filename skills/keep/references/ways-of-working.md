@@ -107,7 +107,7 @@ preview: true, client_session }`. It moves and writes nothing, and returns `snap
 Definition of Done with Keep's marks as they would be written, the deliverable, the time
 (agent time, provisional, per run; the person's user time, confirmed or suggested with its
 basis; the user time on the task) and the suggested reviewer, with `snapshot.text` and one
-`ask`. Present the `ask` to the person once, with `request_form` or your client's own question
+confirmation request (`ask`). Present it to the person once, with `request_form` or your client's own question
 widget, or show `snapshot.text` and request confirmation once. Follow its `next`. Send the
 same `client_session` on the close itself.
 
@@ -217,3 +217,20 @@ Read the code and act on it, do not retry blindly:
 - Do not describe a feature as reversible.
 - Do not set `requirements_customer_visible_default` expecting it to change requirements
   already written: it seeds future rows only.
+
+## Business rules and refusals
+
+- **No record is completed while its children are open.** A requirement is not done
+  while a task delivering it is open; a cycle or release is not closed while a task in it
+  is open.
+- **Release rules.** A release is closed only when each of its tasks is done or moved to
+  the next release with a reason. What Done means (merged, released) is the project's
+  setting, stated in `protocol`.
+- **Time is settled before Done** (`time_settled_at_done`). Before a move to Review or
+  Done, call `stop_work` with `preview: true`, show the summary and wait for the answer.
+  `list_time_entries` with `to_settle: true` lists the time that awaits the person's
+  decision. A Done refused for time carries a confirmation request (`ask`) that lists each entry and run.
+- **Present every refusal.** A refused call wrote nothing. Show its message in full and,
+  when it carries a confirmation request (`ask`), put that question to the person. Never answer it yourself,
+  never work around the rule, and never retry the call unchanged.
+

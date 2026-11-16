@@ -60,10 +60,9 @@ Agent time and token counts are provisional estimates, calculated from the recor
    `held_by_other`, say who holds it and ask. Do not take it.
 2. **Checkpoint.** Call `checkpoint_work` at each finished step, with one line (`note`, past
    tense) and your commits (`commits`: `sha`, `message`, `repo` as `owner/name`).
-3. **Before you stop, show the person the summary.** Call `stop_work` with `preview: true`
-   and a `summary`. It writes nothing. Show `proposal.text` exactly as returned and wait.
-   It states the agent time as calculated and the user time as suggested. Do not ask for
-   a figure of your own.
+3. **Before you stop, and before every move to Review or Done, show the summary.** Call
+   `stop_work` with `preview: true` and a `summary`; it writes nothing. Show `proposal.text`
+   exactly as returned and wait: move the task only after the person's answer.
 4. **Record their answer.** They confirm: `stop_work` with `confirmed: true`. They modify
    it: add their figure in `minutes`, or their `allocation`. No response received:
    `stop_work` with neither, and `as_of` set to the preview's `preview_as_of`; the
@@ -111,8 +110,9 @@ A record's status says what is true now, not what you hope.
 - **Record the deliverable** before Review: commits when the work changed code; otherwise
   offer to save the document as a linked artifact, or record a link or a written outcome.
 - Mark the Definition of Done items Keep has not marked on `evidence`; before Done, show the person the `preview: true`
-  snapshot once. Present every other `ask`; never answer it ([references/ways-of-working.md](references/ways-of-working.md)).
+  snapshot once. Present every other confirmation request (`ask`); never answer it ([references/ways-of-working.md](references/ways-of-working.md)).
 - When you stop, leave one line on the record saying what is left (`next` on `stop_work`).
+- Follow the business rules and present every refusal and its confirmation request (`ask`) (ways-of-working).
 
 ## Dates
 

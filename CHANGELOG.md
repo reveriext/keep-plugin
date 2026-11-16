@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.4.1
+
+- The Keep plugin carries the version of the Keep release it ships with, from this release.
+- Closing a task: before a move to Review or Done, the assistant always calls `stop_work`
+  with `preview: true`, shows the person the time (user time suggested, agent time, any
+  overlap and its suggested split) and waits for the answer before it moves the task.
+- Claude Code: when a turn or the session ends with time of yours from this session
+  awaiting confirmation, the plugin's hooks state it once, naming each task, for example
+  "ABC-12 has 31m of your time from this session awaiting confirmation." The time awaits
+  your decision in My time › To settle.
+- The skill states the business rules (no record is completed while its children are open;
+  the release rules) and presents every refusal, with its confirmation request (`ask`), to the person.
+- `list_time_entries` with `to_settle: true` lists the time that awaits the person's
+  decision.
+
 ## 1.10.0
 
 - Claude Code: the connection check at the first prompt of a session sends the plugin's

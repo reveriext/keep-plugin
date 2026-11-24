@@ -1,24 +1,27 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "keep",
-  "version": "3.4.1",
-  "description": "Keep, your project record, in your AI assistant: the connection, and how to work in it.",
+  "version": "3.5.0",
+  "description": "Your team and your AI assistants, in one shared workspace: the Keep connector and the Keep skill.",
   "author": {
-    "name": "Reveriext",
+    "name": "Reveriext Inc.",
     "url": "https://hykeep.app"
   },
   "homepage": "https://hykeep.app/connect",
   "repository": "https://github.com/reveriext/keep-plugin",
-  "license": "LicenseRef-Proprietary",
+  "license": "Apache-2.0",
   "keywords": ["project management", "requirements", "tasks", "time tracking"],
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Keep",
-        "shortDescription": "Your project record: requirements, tasks, decisions and time.",
-        "developerName": "Reveriext",
+        "shortDescription": "Team and AI in one workspace",
+        "longDescription": "Keep is a shared workspace for your team and your AI assistants: requirements, tasks, decisions, documents and time, connected to the project they belong to, for teams that deliver software. The plugin provides the Keep connector and the Keep skill, which instructs the assistant to manage the project's record: to record requirements, tasks and decisions, to record its work sessions on the record in focus and to keep each record's status accurate. A Keep account is required: the person signs in with it, and the assistant acts only within that person's access and role.",
+        "developerName": "Reveriext Inc.",
         "category": "Productivity",
+        "capabilities": [],
         "websiteURL": "https://hykeep.app",
+        "supportURL": "https://hykeep.app/support",
         "privacyPolicyURL": "https://hykeep.app/privacy",
         "termsOfServiceURL": "https://hykeep.app/terms",
         "composerIcon": "./assets/icon.png",

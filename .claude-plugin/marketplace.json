@@ -1,14 +1,14 @@
 {
   "name": "keep-plugin",
   "owner": {
-    "name": "Reveriext"
+    "name": "Reveriext Inc."
   },
-  "description": "Keep, the project record, for AI assistants: the Keep connector and the Keep skill in one plugin.",
+  "description": "Keep for AI assistants: your team and your AI assistants in one shared workspace. The Keep connector and the Keep skill in one plugin.",
   "plugins": [
     {
       "name": "keep",
       "source": "./",
-      "description": "Keep, your project record, in your AI assistant: the connection, and how to work in it."
+      "description": "Your team and your AI assistants, in one shared workspace: the Keep connector and the Keep skill."
     }
   ]
 }

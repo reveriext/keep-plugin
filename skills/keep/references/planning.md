@@ -65,7 +65,7 @@ The document is the narrative; the records are what the team tracks against.
 2. `open_task { requirement_id }` for each packet, so the work hangs off what it is for.
    The requirement's Delivery pane counts exactly these.
 3. `open_cycle` when the work is timeboxed, and place the tasks with `manage_cycle_tasks`.
-   A task sits in at most one cycle.
+   A task is assigned to at most one cycle.
 4. `record_decision` for every ruling the plan settles: the choice plus the rationale plus
    the options weighed. A project manager's decision is recorded immediately; a member's waits
    for a project manager's approval. A proposal (`status: "proposed"`) is recorded immediately.
@@ -97,13 +97,15 @@ instruction to put them to the person and call again. A refusal like that wrote 
 
 Work each packet inside a work session on its task (`start_work`, `checkpoint_work`,
 `stop_work`), so the time is on the task before you move it. Then move the task with
-`transition_thread`. For work no session covered, book the person's time with `log_time`
+`transition_thread`. For work no session covered, record the person's time with `log_time`
 on the record: one entry per task, not per tool call. Time in Keep is a person's time.
 
-**In that order.** A task cannot reach `done` on a time-tracking project with no time recorded
-against it; the server refuses the move. That gate is task-only. Time itself goes on **any
-record**: a requirement's or a cycle's total is its own entries plus the time on the tasks
-that deliver it. See `time.md`.
+**In that order.** Under Person time tracking Advanced, while the control `time_at_done` is
+Required, a task with no time recorded against it cannot reach `done`: the server refuses the
+move. At Ask, Keep requests the time and the move proceeds; under Simple, Done does not require
+time on the task, and time may be recorded on the project itself. That gate is task-only. Time
+otherwise goes on **any record**: a requirement's or a cycle's total is its own entries plus the
+time on the tasks that deliver it. See `time.md`.
 
 ## Do not
 

@@ -45,7 +45,7 @@ are enabled for the marketplace the plugin was installed from. For a marketplace
 added, they are disabled until the person enables them. If the person asks how to keep the
 Keep plugin up to date, state:
 
-"Run /plugin, open Marketplaces, select keep-plugin and select Enable auto-update."
+"Run /plugin, open Marketplaces, select keep-plugin and enable automatic updates."
 
 A new version takes effect in the next session, or after /reload-plugins. To install an
 update immediately: "Run /plugin, open Installed, select Keep and select Update now."

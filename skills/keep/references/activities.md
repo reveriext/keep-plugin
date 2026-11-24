@@ -2,9 +2,9 @@
 
 Keep has no delivery roles. Anyone may perform any activity that their access allows: a
 developer may report a defect, and a project manager may implement a task. Access remains
-as it is (workspace owner and workspace administrators, a project's managers, a project's members). What Keep
-adds is a method for each activity. When the person performs one of these activities,
-follow its method, whoever they are.
+as it is (workspace owner and workspace administrators, a project's managers, a project's members),
+as `project-management.md` states. What Keep adds is a method for each activity. When the person
+performs one of these activities, follow its method, whoever they are.
 
 Each method below describes a project at the Standard level. The project's own controls
 decide what is requested and what is required: read them in the `protocol` block that
@@ -52,8 +52,11 @@ The person decides how the work will be built.
 The person decides the schedule of work and identifies the risks.
 
 1. Assign tasks to a sprint or a release with `manage_cycle_tasks`, in order.
-2. Request an estimate on each task that is planned into a cycle.
+2. Request an estimate on each task that is planned into a cycle, and record the person's
+   figure with `update_thread_detail` and `patch.estimate_hours`.
 3. Report tasks without estimates, blocked or overdue work, open risks and open questions.
+   Keep records no capacity: make no statement about whether the plan fits the cycle. See
+   [cycles-and-releases.md](cycles-and-releases.md).
 4. Record a risk with `record_risk` and a question that must be answered with
    `open_question`, addressed to a named person.
 
@@ -93,7 +96,7 @@ The person confirms that a delivered requirement meets its acceptance criteria.
 1. List each acceptance criterion of the requirement.
 2. Mark each criterion met or not met with `update_requirement` and its
    `acceptance_state`, by each criterion's `key`. Mark a criterion only on evidence, never
-   on your own judgement alone.
+   on your own judgment alone.
 3. A criterion that is not met becomes a bug against the requirement (activity 8).
 4. Move the requirement to `done` with `transition_thread` once every criterion is met.
 
@@ -110,11 +113,18 @@ The person reports that something does not behave as intended.
 
 ## 9. Releasing
 
-The person closes a release.
+The person closes a release. The rules are in [cycles-and-releases.md](cycles-and-releases.md).
 
-1. Confirm that every task that was released is `done`.
-2. Move each task that was not released to the next cycle, with a reason.
-3. Save the release notes as an artifact linked to the release, and close the cycle.
+1. Confirm that every task that was released is `done`, and that every requirement targeted at
+   the release is Done or Canceled.
+2. Move each task that was not released to the next release with `manage_cycle_tasks`, and
+   write the reason in a reply on the task.
+3. Mark the deployment task Done once the deployment is complete.
+4. Record the release tag (the version, the git tag and the bundle), and link the release it
+   replaces with `supersedes`.
+5. Close the release with `transition_thread`, writing the release notes in
+   `completion_note_md`. A linked artifact does not count as the release notes.
+6. Open the next release, and re-point Maintenance at the release now in production.
 
 ## 10. Communicating outcomes
 

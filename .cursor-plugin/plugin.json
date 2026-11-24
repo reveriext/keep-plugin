@@ -1,0 +1,15 @@
+{
+  "name": "keep",
+  "version": "3.5.0",
+  "description": "Your team and your AI assistants, in one shared workspace: the Keep connector and the Keep skill.",
+  "author": {
+    "name": "Reveriext Inc."
+  },
+  "homepage": "https://hykeep.app/connect",
+  "repository": "https://github.com/reveriext/keep-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["project management", "requirements", "tasks", "time tracking"],
+  "logo": "assets/logo.png",
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

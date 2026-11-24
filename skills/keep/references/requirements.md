@@ -17,12 +17,13 @@ Anything new starts here:
    Delivery pane counts.
 
 A chore or a follow-up may be a task on its own. A new capability may not, and neither may a
-**bug**: see §7.
+**bug**: see §7. The project's control `requirement_first` makes Keep request the requirement a
+new task belongs to (Ask at the Standard level, Required at Strict).
 
 ## 1b. Type follows relationship
 
 The type is not a matter of taste: it is what the record points at, and the server refuses a
-type that does not match. Pick the relationship first and the type follows from it.
+type that does not match. Establish the relationship first, and the type follows from it.
 
 | The record… | Type | And it must carry |
 |---|---|---|
@@ -62,7 +63,7 @@ instruction to put them to the person and call again. A refusal like that wrote 
   unchanged and resets the rest.
 - Whoever verifies the requirement marks each criterion met or not met with
   `update_requirement` and its `acceptance_state`, by each criterion's `key`. Mark a
-  criterion only on evidence, never on your own judgement alone.
+  criterion only on evidence, never on your own judgment alone.
 
 Both are snapshotted at every version, so any two versions can be compared later.
 
@@ -77,35 +78,40 @@ Three verbs, and they are three different acts. Choose deliberately:
 | moving its status | `transition_thread` | no |
 | accepting a change request | `apply_change_request` | yes |
 
-`amend_requirement` **requires** `summary` and it becomes the line in the Versions rail.
+`amend_requirement` **requires** `summary` and it becomes the line in the Versions rail. Send the `updated_at` you read as `expected_updated_at` on `amend_requirement` and on `apply_change_request` (the requirement's, not the change request's), and on `update_requirement` when it changes the title, the statement or the acceptance criteria: Keep refuses an amendment of a field that another person changed after you read it ([records.md](records.md)).
 Write the reason, not a restatement of the diff: *"Narrowed to managers only, per Dana on
 the 3rd"*, not *"changed body"*.
 
 Use `update_requirement` for everything that is not a change the team should review. It was
-split out precisely because a change log full of typo fixes and priority nudges is a log
+separated precisely because a change log full of typo corrections and priority adjustments is a log
 nothing can be found in.
 
 ## 4. The workflow is the task workflow, verbatim
 
 `open` = proposed, not yet taken up → `in_progress` = accepted and being delivered →
 `review` = delivered, awaiting verification → `done` = verified. Plus `blocked`, and
-`cancelled`: where the transition `reason` says whether it was rejected or withdrawn.
+`cancelled`.
 
-Move status with `transition_thread` and give a reason whenever the move is not obvious.
+Move status with `transition_thread` and give a reason whenever the move is not obvious. A
+cancellation states its kind, with `transition_thread` and `cancellation`: `dropped` when the
+work is no longer being done, or `replaced` with `replaced_by` naming the record that replaces
+it, which Keep links to it with `supersedes`. While the control `cancellation_names_kind` is
+Required (the Standard and Strict levels), a cancellation without its kind is refused.
 
 ## 5. A change request amends; it does not edit
 
 Do not edit an agreed requirement because scope moved. File the change:
 
 1. `open_requirement { req_type: "change_request", derive_from_thread_id: <target> }` with
-   the proposed text. **The target stays untouched while the CR is open.**
+   the proposed text. **The target is not modified while the CR is open.**
 2. `apply_change_request { cr_thread_id, summary, title?, body_md?, acceptance_md? }`: the
    target is edited from the CR, gains the next version marked `cr_applied` with the CR
    recorded against it, and the CR closes. One act; it needs `acknowledge: true` because it
    writes a record the caller did not name.
-3. To reject instead: `transition_thread` the CR to `cancelled`.
+3. To reject it instead: `transition_thread` the CR to `cancelled`, with `cancellation:
+   "dropped"` and a `reason`.
 
-If an application fails, nothing landed and the CR is still open: re-apply.
+If an application fails, nothing was saved and the CR is still open: apply it again.
 
 ## 6. Structure
 
@@ -114,7 +120,7 @@ If an application fails, nothing landed and the CR is still open: re-apply.
   amends.
 - `module_id`: the part of the product it belongs to. Left out, an enhancement or a change
   request takes its parent requirement's module; otherwise the requirement is created
-  unfiled and the answer carries `module_ask` (a question for the person: never pick for
+  unfiled and the answer carries `module_ask` (a question for the person: never choose for
   them) or `module_note` (the project has no modules: say so once). See `records.md`.
 - `target_cycle_id`: the release it is aimed at.
 - `link_threads { relation: "blocked_by" }`: a dependency. An open blocker warns on
@@ -123,7 +129,7 @@ If an application fails, nothing landed and the CR is still open: re-apply.
 ## 7. A bug is against a delivered requirement
 
 "Delivered" is a status: `review` (delivered, awaiting verification) or `done` (verified). A bug
-reports that something which shipped is wrong, so it needs one of those on the other end.
+reports that something that was released is incorrect, so it needs one of those on the other end.
 
 ```
 open_task { task_type: "bug", requirement_id: <a requirement in review or done>,
@@ -132,17 +138,60 @@ open_task { task_type: "bug", requirement_id: <a requirement in review or done>,
 
 - Against a requirement that is **not** delivered, the work is unfinished, not broken: open a
   plain task under it (`open_task { requirement_id }`): or a **change request** if the
-  requirement itself is what is wrong.
+  requirement itself is what is incorrect.
 - Against **nothing at all**: a plain task. The exception is a project with requirements off:
   there a bug needs no `requirement_id`, and keeps its report.
 - Retyping an existing task to `bug` needs the link to be there already
   (`link_threads { relation: "derives_from" }` to the requirement), and removing a bug's last
   such link is refused until the task is retyped. With requirements off, neither applies.
 
+## 8. Decomposing a requirement into tasks
+
+A requirement is delivered by its tasks. Divide it once its statement and acceptance criteria
+are agreed:
+
+1. **One task per deliverable unit**: a piece of work that one person completes and that can be
+   reviewed on its own. Each is `open_task` with `requirement_id`; the task takes the
+   requirement's module unless the person names another.
+2. **Place each task in the plan** with `parent_cycle_id` and `position` (or later with
+   `manage_cycle_tasks`, in `cycles-and-releases.md`), and record the due date the person gives.
+3. **Record the order of dependency**: a task that cannot start before another is linked with
+   `link_threads { relation: "blocked_by" }`.
+4. **Record the design choices** with `record_decision`, and link each specification or design
+   artifact to the requirement with `link_threads`.
+5. The division is a proposal. Present the list of tasks, with their titles in the person's
+   words, before opening them.
+
+## 9. Tracing delivery
+
+`get_thread` on a requirement returns its delivery:
+
+- `tasks`: the tasks that deliver it, each with its status;
+- `acceptance_criteria`: each criterion with its `key` and its state;
+- `open_bugs`: the bugs open against it;
+- `change_requests`: the change requests against it;
+- `children`: the requirements filed under it.
+
+Report delivery from these fields: which tasks are done, which remain, and which criteria are
+met. A requirement is not complete while a task that delivers it, a child requirement or a change
+request against it is open (`children_settled_before_done`).
+
+## 10. Verifying acceptance
+
+1. Read the criteria from `acceptance_criteria`.
+2. Mark each criterion on evidence with `update_requirement` and `acceptance_state`, by its
+   `key`: the test that passed, the behavior observed, the record that delivered it. Never mark
+   one on your own judgment alone.
+3. A criterion that is not met becomes a bug against the requirement (§7), once the
+   requirement is delivered.
+4. Move the requirement to `done` once every criterion is met and every task that delivers it
+   is settled. The control `acceptance_verified` requests every criterion marked as met (Ask at
+   the Standard level); at Required, Done is refused until each one is.
+
 ## Do not
 
 - Do not overwrite a requirement's text to reflect a new agreement: amend it, or file a CR.
-- Do not pick a type and then look for a relationship to justify it: the relationship decides.
+- Do not choose a type and then look for a relationship to justify it: the relationship decides.
 - Do not put acceptance criteria inside the statement, and do not write several criteria as
   one paragraph.
 - Do not amend for a typo, and do not `update_requirement` for a real change of meaning.

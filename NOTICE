@@ -1,0 +1,13 @@
+Keep plugin
+Copyright 2026 Reveriext Inc.
+
+This package (the Keep plugin: its manifests, the Keep skill and its reference
+files, the scripts and the images) is licensed under the Apache License,
+Version 2.0, in the file LICENSE.
+
+The license covers this package only. It grants no right to the Keep service at
+https://hykeep.app, whose use is governed by the Keep Terms of Service at
+https://hykeep.app/terms and requires a Keep account. As section 6 of the
+license states, it grants no permission to use the Keep name, the Keep logo or
+any other trademark of Reveriext Inc., except as required to describe the
+origin of the package.

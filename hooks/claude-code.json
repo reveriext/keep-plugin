@@ -1,5 +1,18 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -16,22 +29,44 @@
             "input": {
               "session_id": "${session_id}",
               "format": "hook",
-              "plugin_version": "3.4.1",
+              "plugin_version": "3.5.0",
               "client": "claude-code"
             },
-            "timeout": 3,
+            "timeout": 10,
             "statusMessage": "Verifying the Keep connection"
           },
           {
-            "type": "mcp_tool",
-            "server": "plugin:keep:keep",
-            "tool": "record_agent_activity",
-            "input": {
-              "event": "person_prompt",
-              "session_id": "${session_id}",
-              "format": "hook"
-            },
-            "timeout": 3
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/active.sh"],
+            "async": true,
+            "timeout": 5
           }
         ]
       }
@@ -40,22 +75,11 @@
       {
         "hooks": [
           {
-            "type": "mcp_tool",
-            "server": "plugin:keep:keep",
-            "tool": "record_agent_activity",
-            "input": {
-              "event": "turn_end",
-              "session_id": "${session_id}",
-              "format": "hook"
-            },
-            "timeout": 3
-          },
-          {
             "type": "command",
             "command": "node",
             "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
             "async": true,
-            "timeout": 3
+            "timeout": 5
           }
         ]
       }
@@ -64,16 +88,11 @@
       {
         "hooks": [
           {
-            "type": "mcp_tool",
-            "server": "plugin:keep:keep",
-            "tool": "record_agent_activity",
-            "input": {
-              "event": "subagent_start",
-              "session_id": "${session_id}",
-              "agent_id": "${agent_id}",
-              "agent_type": "${agent_type}"
-            },
-            "timeout": 2
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
+            "timeout": 5
           }
         ]
       }
@@ -82,22 +101,11 @@
       {
         "hooks": [
           {
-            "type": "mcp_tool",
-            "server": "plugin:keep:keep",
-            "tool": "record_agent_activity",
-            "input": {
-              "event": "subagent_end",
-              "session_id": "${session_id}",
-              "agent_id": "${agent_id}"
-            },
-            "timeout": 2
-          },
-          {
             "type": "command",
             "command": "node",
             "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
             "async": true,
-            "timeout": 2
+            "timeout": 5
           }
         ]
       }
@@ -106,14 +114,23 @@
       {
         "hooks": [
           {
-            "type": "mcp_tool",
-            "server": "plugin:keep:keep",
-            "tool": "record_agent_activity",
-            "input": {
-              "event": "session_end",
-              "session_id": "${session_id}",
-              "format": "hook"
-            },
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/usage.mjs"],
+            "async": true,
             "timeout": 5
           }
         ]

@@ -10,11 +10,15 @@ A connection in Code Mode has a short tool list:
 - `use_tool`: makes one change in Keep, with `name` and `arguments`. Its description lists the
   write tools, with their fields.
 - `request_form`: asks the person, as in every mode.
-- One tool that the Keep plugin calls to record the assistant's activity. It is not yours to
-  call.
+- One tool that records the assistant's activity. Call it directly, never in a script and
+  never through `use_tool`, and only as `time.md` states for the person's prompts.
 
 `code` and `use_tool` both take `workspace`. A call inside a script works in that
 workspace unless its own arguments name another.
+
+Both also take `client_session`, `parent_session` and `client_agent`, and carry them into each
+call they make. Send the conversation's `client_session` on every `code` and `use_tool` call,
+and a subagent its `client_agent` as well ([connection.md](connection.md)).
 
 If `code` and `use_tool` are not in the tool list, the connection has every tool listed
 (All tools). Call each tool directly, as the rest of this skill says. Nothing here applies.
@@ -103,7 +107,7 @@ The person chooses for each connection, on My profile › Connections, under Too
 - **Automatic**, the default: All tools for ChatGPT and Codex, and Code Mode for every other
   AI assistant.
 - **Code Mode**: `get_skill`, `connection_status`, `code`, `use_tool`, `request_form`, and the
-  tool the Keep plugin calls to record the assistant's activity.
+  tool that records the assistant's activity.
 - **All tools**: every tool, called one at a time. `code` and `use_tool` are not listed,
   and the assistant works as it always has.
 

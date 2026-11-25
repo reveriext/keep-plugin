@@ -56,10 +56,11 @@ get_work_session { thread_id? }
   with `thread_id`, each checked as `thread_id` is, and share the time equally. Name them
   only when the work really serves each one; otherwise start work on one record at a time.
 - **`client_label`** is how your client is named on the record ("Cursor", "Codex"), up to
-  40 characters. Optional. `client_session` is your client's own session identifier: with
-  it, starting a second record closes the first. When the Keep plugin gives you this
-  session's identifier, send it: the assistant time the plugin measures is then recorded on
-  the record in focus.
+  40 characters. Optional. `client_session` is the conversation's identifier: the one
+  `connection_status` returns, or the one the Keep plugin gives you
+  ([connection.md](connection.md)). Send it on this call and on every other Keep call. With
+  it, starting a second record closes the first, and the assistant time is recorded on the
+  record in focus. Without it, `start_work` returns one: send that one from then on.
 - **`checkpoint_work`** is quiet: it adds a line to the record's activity and grows the
   time entry, creating it on the first checkpoint.
 - **`commits`**, on `checkpoint_work`, `pause_work` and `stop_work`, is a list of
@@ -100,7 +101,8 @@ usage { model, input_tokens, output_tokens, cache_tokens, user_active_seconds }
 **Assistant time** is the time your session spent working, recorded against the record in
 focus. Keep calculates it in one of two ways, and the record states which:
 
-- **Measured by the Keep plugin**: in a client where the Keep plugin runs, each turn from
+- **Measured by the Keep plugin**: in a client where the Keep plugin reports the session's
+  activity (Claude Code, except in the Code tab of the Claude desktop application), each turn from
   the person's prompt to the end of your reply is counted in full, up to a limit per turn,
   and each subagent's work is counted as its own run on the same record. Once the session
   is associated with its project, Keep records its time for that project from the first
@@ -110,7 +112,10 @@ focus. Keep calculates it in one of two ways, and the record states which:
   names the record counts as activity, and an inactivity period equal to the project's Idle
   limit (10 minutes by default) closes the session. So
   forty minutes of work between two calls is a few minutes on Keep's count: checkpoint at
-  each completed step.
+  each completed step. The calls of one conversation form one run when each carries the
+  conversation's `client_session`. A conversation that only reads, with no work session and
+  no change to a record, records no assistant time and leaves nothing to settle, provided that
+  no work session of the person is open while it reads.
 
 **User time** is suggested from the person's own acts during the session: prompts, answers
 to your questions, approvals, answered forms, reviews and meetings. The Keep plugin reports
@@ -157,6 +162,61 @@ person confirms or modifies the user time only.
 
 A checkpoint or a stop on a session that was already closed after inactivity is still
 accepted and updates the same entry, so a late summary is not lost.
+
+### The person's prompts, where the Keep plugin does not report them
+
+The Keep plugin's statement is the instruction the plugin gives at the first prompt: it begins
+"Keep is connected as" and gives you the session's identifier ("send client_session with the
+value …"). The answer to your own `connection_status` call is not that statement. Where the
+statement is not in your context (the plugin did not run in this conversation, or the assistant
+in use has no Keep plugin), report each prompt of the person yourself, while Keep is in use in
+the conversation:
+
+```
+record_agent_activity { event: "person_prompt", session_id }
+```
+
+- **`session_id`** is the conversation's `client_session`, the one Keep issued (it begins with
+  `kcs_`). Make the call only with such an identifier. The call names the workspace of the
+  work, as your other Keep calls do.
+- **Once in each turn in which the person wrote to you**, at the start of the turn, before any
+  other Keep call of that turn. Make no such call in a turn that you, a schedule or another
+  conversation started, and never from a subagent.
+- **Send nothing of what the person wrote:** no words of the prompt, no summary and no length.
+  Send only the fields above. Keep retains only the time of the prompt, the workspace to which
+  it is reported, the conversation's identifier and the connection under which it was received,
+  never any content of the prompt, and records it as the person's own act, under a source of its
+  own, apart from the Keep plugin's reports.
+- **Keep records these reports only from the person's acceptance of the Terms of Service dated
+  25 November 2026.** For a person who has not accepted them, Keep answers the report and
+  records nothing. Make the call all the same; do not ask the person about it.
+- **An answer `recorded: false` (`not_recorded`) is not a reason to stop reporting.** Keep
+  also returns it while Person time tracking is Off or when the conversation's limit is reached.
+  Continue to report each prompt: a person who accepts the Terms during the conversation is
+  recorded from that acceptance.
+- **Where the Keep plugin's statement is in your context, make no such call:** the plugin
+  reports the person's prompts itself.
+- In Code Mode, make the call directly: never in a `code` script and never through `use_tool`.
+- After the person declines Keep for the conversation, or asks you not to track the work, make
+  no such call.
+
+### Subagents, and conversations you start
+
+- **A subagent** works inside this conversation. In its brief, give it this conversation's
+  `client_session` and a `client_agent` label that names its role (for example `reviewer`:
+  letters, digits and `-`, `_`, `.` or `:`, up to 64 characters), and instruct it to send both on
+  each Keep call it makes. Keep records the subagent's calls as its own assistant run, beside
+  the conversation's. A subagent does not call `start_work`, `pause_work` or `stop_work`: with
+  the same `client_session`, a second record started would close the conversation's work
+  session. It returns its commits and its result to you, and you record them with
+  `checkpoint_work`. A subagent records no user time; the person acts in the conversation.
+- **A conversation that you start** (for example, an additional session or a cloud session of
+  your client) is a conversation of its own. Instruct it to call `connection_status` with `parent_session`
+  set to this conversation's `client_session`, to send the `client_session` it receives on
+  each of its calls, and to send `parent_session` again on its first `start_work`. Its
+  assistant time is its own. It records no user time unless the person acts in it directly.
+- **No figure in a brief.** Never pass a figure of time or `usage` to a subagent or a
+  conversation that its client did not report; Keep calculates assistant time from the calls.
 
 ### Switching records
 

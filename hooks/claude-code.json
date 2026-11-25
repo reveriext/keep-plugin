@@ -29,7 +29,7 @@
             "input": {
               "session_id": "${session_id}",
               "format": "hook",
-              "plugin_version": "3.5.0",
+              "plugin_version": "3.5.1",
               "client": "claude-code"
             },
             "timeout": 10,

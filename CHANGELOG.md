@@ -1,5 +1,44 @@
 # Changelog
 
+## 3.5.1
+
+- The Keep skill verifies the connection and the Keep plugin's version itself, once per session,
+  when no statement from Keep is in the assistant's context at its first use of Keep: it calls
+  `connection_status` with the plugin's version and the assistant in use. When the plugin is
+  out of date, the assistant states Keep's statement with its update step and asks the person
+  to update the plugin before the work continues. In Claude Code, the assistant also states
+  that the plugin's hooks did not run, so that Keep received none of the person's prompts and
+  answers from the plugin; the assistant then reports each prompt itself, as below.
+- The conversation's identifier. The same call to `connection_status` returns `client_session`,
+  the identifier that Keep issues for the conversation. The assistant sends it on every later
+  Keep call, reads included, and on each `code` and `use_tool` call, so that the calls of one
+  conversation form one assistant run. Where the plugin's hooks run, the assistant sends the
+  session identifier that the plugin gives it instead. The skill states the two refusals,
+  `client_session_not_issued` and `client_session_unavailable`, and what to do after each.
+- The plugin's hooks do not run in the Code tab of the Claude desktop application. There, the
+  connector and the skill record the time: the assistant opens a work session with `start_work`
+  before it changes code or a record, and checkpoints at each completed step.
+- Subagents and conversations the assistant starts. The assistant gives every subagent, in its
+  brief, the conversation's `client_session` and a `client_agent` label, which the subagent sends
+  on each Keep call; a subagent does not start or stop work. A conversation the assistant starts
+  obtains its own `client_session` and sends the first conversation's as `parent_session`. The
+  assistant never sends a figure of time or token counts that its client did not report.
+- A conversation that only reads, with no work session and no change to a record, records no
+  time and leaves nothing to settle, provided that no work session of the person is open while it
+  reads; the skill states this.
+- The person's prompts, where the plugin's hooks do not run. The assistant reports each prompt
+  of the person once, at the start of the turn and before any other Keep call of that turn,
+  with `record_agent_activity`, the event `person_prompt` and the conversation's
+  `client_session` (an identifier Keep issued) as `session_id`. The skill directs the assistant
+  to send only the event's name and the conversation's identifier, and nothing of the prompt: no
+  words, no summary and no length. Keep retains only the time of the prompt, the workspace to
+  which it is reported, the conversation's identifier and the connection under which it was
+  received, never any content of the prompt, and records it as the person's own act, under a
+  source of its own, apart from the plugin's reports. Keep records these reports only from the
+  person's acceptance of the Terms of Service dated 25 November 2026. Where the plugin's hooks
+  run, the plugin reports the prompts, and Keep does not record a prompt that the
+  assistant reports at a moment the plugin is measuring.
+
 ## 3.5.0
 
 - Claude Code: the prompt waits for one hook that reaches Keep, `connection_status`, which Keep

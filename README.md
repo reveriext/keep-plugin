@@ -54,17 +54,53 @@ project manager: in Keep, that is an access capability a person holds on a proje
 - When the connection is in Code Mode: to write a script for several calls, and to make every
   step that needs the person's agreement its own `use_tool` call.
 
-The skill is instructions. It measures nothing and blocks nothing: outside Claude Code, Keep
-calculates assistant time from the assistant's own calls, and nothing stops a commit that names
-no record. If your assistant does not follow it, tell it to "use the Keep skill". In Claude
-Code, the plugin's hooks verify the connection, give the assistant the instructions quoted
-below, and report the assistant's work, and your presence while assistants work, to Keep; they perform only the
-functions stated under "What the plugin runs, reads and sends in Claude Code".
+The skill is instructions. It measures nothing and blocks nothing: outside Claude Code, and in
+the Code tab of the Claude desktop application, Keep calculates assistant time from the
+assistant's own calls, and nothing stops a commit that names no record. If your assistant does
+not follow it, tell it to "use the Keep skill". In Claude Code, the plugin's hooks verify the
+connection, give the assistant the instructions quoted below, and report the assistant's work,
+and your presence while assistants work, to Keep; they perform only the functions stated under
+"What the plugin runs, reads and sends in Claude Code". The plugin's hooks do not run in the
+Code tab of the Claude desktop application: there, as in every other assistant, the connector
+and the skill record the time.
+
+### The conversation's identifier
+
+Where the plugin's hooks do not run, the skill has the assistant call Keep's `connection_status`
+tool once, at the start of each conversation, with the plugin's version and the name of the
+assistant, when it is one Keep names. Keep answers with the connection statement, which names
+you, your email address and your workspaces, the update step when the plugin is out of date, and
+`client_session`: an identifier that Keep issues for the conversation. The assistant sends it on
+every later Keep call, so that the calls of one conversation are recorded as one assistant run,
+and gives it, with a label naming the subagent (`client_agent`), to each subagent it starts. The
+identifier begins with `kcs_` and consists of a random part and a signature that Keep computes
+for the connection; it contains no name, email address or content, and Keep stores nothing in
+order to issue it. It is recorded with the conversation's assistant runs and work sessions,
+which are time records of the workspace, and a subagent's label is recorded with the subagent's
+run. A call that sends an identifier beginning with `kcs_` that Keep did not issue for the
+connection is refused. Where the plugin's hooks run, the assistant sends the plugin's own
+session identifier instead, which Keep accepts as it is. A conversation that only reads, with no
+work session and no change to a record, records no time, provided that no work session of yours
+is open while it reads; a read made while one is open counts toward that session's time.
+
+Where the plugin's hooks do not run, the skill also has the assistant report each of your
+prompts, while Keep is in use in the conversation: once, at the start of each turn in which you
+wrote to it, before any other Keep call of that turn, one call to Keep's `record_agent_activity`
+tool with the event `person_prompt` and the identifier Keep issued for the conversation. The
+skill directs the assistant to send only the event's name and the conversation's identifier, and
+nothing of the prompt: no words, no summary and no length. Keep retains only the time of the
+prompt, the workspace to which it is reported, the conversation's identifier and the connection
+under which it was received, never any content of your prompt, and records it as your own act,
+under a source of its own, apart from the plugin's reports. Keep records these reports only from
+your acceptance of the Terms of Service dated 25 November 2026. Where the project's Person time tracking is enabled, Keep suggests user time from it as from your other acts, for your confirmation. A subagent makes no such call. Where the plugin's
+hooks run, the plugin reports your prompts, and Keep does not record a prompt that the assistant
+reports at a moment the plugin is measuring.
 
 ### Connection verification in Claude Code
 
-In Claude Code, the Keep plugin verifies the Keep connection at the first prompt of each
-session, and the assistant states the result once:
+In Claude Code, except in the Code tab of the Claude desktop application, the Keep plugin
+verifies the Keep connection at the first prompt of each session, and the assistant states the
+result once:
 
 - connected: "Keep is connected as" the person, with their email address and workspaces;
 - not connected: "Keep is not connected. Run /mcp, select the Keep server and complete
@@ -88,7 +124,9 @@ work is established.
 
 ### Assistant time in Claude Code
 
-In Claude Code, the Keep plugin measures the assistant time of each session. The script
+In Claude Code, where its hooks run, the Keep plugin measures the assistant time of each session.
+Its hooks do not run in the Code tab of the Claude desktop application; there, Keep calculates
+the assistant time from the assistant's calls to Keep, as for any other assistant. The script
 `usage.mjs` records, in the background, when you submit a prompt, when you answer a question the
 assistant asks in Claude Code's question dialog, when the assistant finishes its reply, when a
 subagent starts and stops, and when the session ends, and reports each of these events to Keep.
@@ -391,7 +429,7 @@ The plugin stores no words of a prompt, a reply or a file.
 #### When it runs
 
 Claude Code runs every hook above at its event, in every session, while the plugin is installed
-and enabled. `session-check.sh`, `connection_status` and the saving of events in the spool run
+and enabled, except in the Code tab of the Claude desktop application, where it runs none. `session-check.sh`, `connection_status` and the saving of events in the spool run
 whatever the project's settings; Keep applies the project's settings to what it records.
 
 `usage.mjs` reads the session's transcript at each of its runs, to find the report code. It
@@ -562,7 +600,11 @@ it.
 The plugin's hooks are written for Claude Code. There, they send the events and figures
 stated under "What the plugin runs, reads and sends in Claude Code", to the Keep connector and
 to `https://mcp.hykeep.app/plugin/events` only, and never your prompt, the assistant's reply or
-any file.
+any file. In every assistant, the skill has the assistant send the Keep connector the plugin's
+version, the assistant's name, the conversation's identifier, a subagent's label and, where the
+hooks do not run, a report at the start of each turn in which you wrote, never any content of it,
+as stated
+under "The conversation's identifier".
 
 - [Trust and security](https://hykeep.app/trust)
 - [Privacy Policy](https://hykeep.app/privacy)
@@ -575,7 +617,8 @@ The plugin's version is the version of the Keep release it accompanies, and the
 [CHANGELOG](CHANGELOG.md) states what each version changed.
 
 **Automatic updates in Claude Code.** When the installed version is out of date, Keep states
-so once per session in Claude Code, with the update step. Claude Code installs a new version of the Keep plugin
+so once per session in Claude Code, with the update step; in the Code tab of the Claude desktop
+application, once per conversation, through the skill's own check. Claude Code installs a new version of the Keep plugin
 automatically only when automatic updates are enabled for the marketplace it came from. They
 are disabled for a marketplace you add yourself. Enable them once: run `/plugin`, open
 **Marketplaces**, select **keep-plugin** and enable automatic updates. A new version
